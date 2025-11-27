@@ -24,14 +24,12 @@ export const IconDestination = ({ size = 20 }) => (
   </svg>
 )
 
-// Walking person
+// Walking person - clean minimal style
 export const IconWalk = ({ size = 20 }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="rgba(255, 255, 255, 0.7)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="12" cy="5" r="2"/>
-    <path d="M10 22l2-7"/>
-    <path d="M14 22l-2-7"/>
-    <path d="M8 12l2-3 2 3"/>
-    <path d="M16 12l-2-3"/>
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+    <circle cx="12" cy="12" r="8" fill="rgba(255, 255, 255, 0.06)" stroke="rgba(255, 255, 255, 0.2)" strokeWidth="1.5"/>
+    <circle cx="12" cy="7" r="1.8" fill="rgba(255, 255, 255, 0.8)"/>
+    <path d="M12 9v4.5M10 17l2-3.5 2 3.5M9.5 12.5l2.5 1M14.5 12.5l-2.5 1" stroke="rgba(255, 255, 255, 0.75)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
   </svg>
 )
 
