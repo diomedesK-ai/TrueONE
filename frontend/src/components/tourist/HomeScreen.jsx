@@ -59,7 +59,7 @@ export default function HomeScreen({ onOpenChat }) {
             onClick={() => onVoiceIntent('navigate_loyalty')}
           >
             <span className="stat-value coin-value">{loyalty.balance}</span>
-            <span className="stat-label">TrueCoins</span>
+            <span className="stat-label">trueCoins</span>
           </div>
         </div>
       </div>

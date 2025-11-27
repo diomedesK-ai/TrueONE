@@ -224,6 +224,17 @@ function TouristChat({
 3. **Recommendations** - Suggest places, food, experiences
 4. **Itinerary Building** - Create step-by-step travel plans
 5. **Camera/Photos** - Take photos and analyze what they see
+6. **Web Search** - Look up real-time info for shops, restaurants, addresses
+
+**⚠️ CRITICAL - ALWAYS USE WEB SEARCH FOR:**
+- Specific shop/store queries (Alo Yoga, Lululemon, Zara, H&M, etc.)
+- Restaurant addresses and hours
+- "Is there a [business] near [location]?"
+- "Where can I find [specific store]?"
+- Any query about a specific business, brand, or establishment
+- Current prices, opening hours, addresses
+
+NEVER guess or hallucinate about shops/businesses. ALWAYS call web_search() first!
 
 **FUNCTION CALLING - Use these functions:**
 
@@ -406,6 +417,19 @@ Example: User asks "Where can I get cash near MBK?"
 
 Be conversational, enthusiastic about Thailand, and always helpful!`,
           tools: [
+            {
+              type: 'function',
+              name: 'web_search',
+              description: 'Search the internet for real-time, up-to-date information. ALWAYS use this when user asks about: specific shops/stores (Alo Yoga, Lululemon, etc.), restaurants, businesses, current prices, opening hours, addresses, or anything that requires current/accurate information. This ensures you give accurate, verified information instead of guessing.',
+              parameters: { 
+                type: 'object', 
+                properties: {
+                  query: { type: 'string', description: 'The search query (e.g., "Alo Yoga store Bangkok Lumpini", "best pad thai near Silom")' },
+                  location: { type: 'string', description: 'Location context (default: Bangkok, Thailand)' }
+                },
+                required: ['query']
+              }
+            },
             {
               type: 'function',
               name: 'pause_voice',
@@ -897,6 +921,31 @@ Be conversational, enthusiastic about Thailand, and always helpful!`,
     console.log(`🚀 EXECUTING: ${functionName}`, args)
     
     switch(functionName) {
+      case 'web_search':
+        try {
+          console.log('🔍 Searching web for:', args.query)
+          const searchRes = await fetch('/api/search', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+              query: args.query, 
+              location: args.location || 'Bangkok, Thailand' 
+            })
+          })
+          const searchData = await searchRes.json()
+          
+          if (searchData.success && searchData.summary) {
+            console.log('✅ Search results:', searchData.summary.substring(0, 100) + '...')
+            sendFunctionResult(args._callId, `Search results for "${args.query}":\n\n${searchData.summary}\n\nPlease use this information to answer the user's question accurately.`)
+          } else {
+            sendFunctionResult(args._callId, `I couldn't find specific information about "${args.query}". Please suggest the user search on Google Maps or the official website.`)
+          }
+        } catch (err) {
+          console.error('Search error:', err)
+          sendFunctionResult(args._callId, `Search failed. Suggest the user check Google Maps or search online for "${args.query}".`)
+        }
+        break
+        
       case 'pause_voice':
         // Immediately pause - mute mic and AI audio
         if (peerConnectionRef.current) {
