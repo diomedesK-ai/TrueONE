@@ -3,17 +3,19 @@ import { useTouristApp } from '../../contexts/TouristAppContext'
 import WalkingDirections from './WalkingDirections'
 import './TouristChat.css'
 
-// Available offers that can be shown inline
+// Available offers - CP Group brands only (Thailand)
+// CP Group: 7-Eleven, Chester's, True, Five Star, CP Fresh, Lotus's, All Cafe
 const OFFERS = {
   '7eleven-coffee': {
     id: '7eleven-coffee',
     brand: '7-Eleven',
-    title: 'Free Hot or Iced Coffee',
+    title: 'Free All Cafe Coffee',
     description: 'Any Americano, Latte or Cappuccino - hot or iced! Free with ฿50+ spend',
     cost: 30,
     type: 'coins',
     color: '#00843D',
-    gradient: 'linear-gradient(135deg, #00843D 0%, #005A2B 100%)'
+    gradient: 'linear-gradient(135deg, #00843D 0%, #005A2B 100%)',
+    locations: '13,000+ stores across Thailand'
   },
   '7eleven-snack': {
     id: '7eleven-snack',
@@ -23,77 +25,107 @@ const OFFERS = {
     cost: 0,
     type: 'free',
     color: '#00843D',
-    gradient: 'linear-gradient(135deg, #00995C 0%, #006B3F 100%)'
+    gradient: 'linear-gradient(135deg, #00995C 0%, #006B3F 100%)',
+    locations: 'Every corner in Bangkok'
   },
-  'pizza-bogo': {
-    id: 'pizza-bogo',
-    brand: 'The Pizza Company',
-    title: 'Buy 1 Get 1 Free',
-    description: 'Any large pizza, get another free. Delivery available!',
-    cost: 80,
+  '7eleven-readymeals': {
+    id: '7eleven-readymeals',
+    brand: '7-Eleven',
+    title: 'Ready Meal Deal',
+    description: 'Buy 2 CP ready meals, get 1 free. Fresh & delicious!',
+    cost: 20,
     type: 'coins',
-    color: '#D4002A',
-    gradient: 'linear-gradient(135deg, #D4002A 0%, #8B001B 100%)'
-  },
-  'swensens': {
-    id: 'swensens',
-    brand: "Swensen's",
-    title: '50% Off Sundae',
-    description: 'Half-price sundaes & earthquakes. Beat the heat!',
-    cost: 40,
-    type: 'coins',
-    color: '#E91E63',
-    gradient: 'linear-gradient(135deg, #E91E63 0%, #AD1457 100%)'
+    color: '#00843D',
+    gradient: 'linear-gradient(135deg, #2E7D32 0%, #1B5E20 100%)',
+    locations: '24/7 availability'
   },
   'chesters': {
     id: 'chesters',
     brand: "Chester's Grill",
     title: 'Free Meal Upgrade',
-    description: 'Larger drink, more fries & extra chicken free!',
+    description: 'Upgrade to large set with extra chicken - free!',
     cost: 0,
     type: 'free',
     color: '#FF6B00',
-    gradient: 'linear-gradient(135deg, #FF6B00 0%, #CC5500 100%)'
+    gradient: 'linear-gradient(135deg, #FF6B00 0%, #CC5500 100%)',
+    locations: '500+ locations including malls & airports'
+  },
+  'fivestar': {
+    id: 'fivestar',
+    brand: 'Five Star Chicken',
+    title: 'Family Bucket Deal',
+    description: '8pc chicken bucket + 2 sides for price of 6pc',
+    cost: 50,
+    type: 'coins',
+    color: '#FFD700',
+    gradient: 'linear-gradient(135deg, #FFD700 0%, #FFA000 100%)',
+    locations: 'Major malls & transit hubs'
+  },
+  'cpfresh': {
+    id: 'cpfresh',
+    brand: 'CP Fresh Mart',
+    title: '20% Off Fresh Produce',
+    description: 'Discount on fruits, vegetables & CP meats',
+    cost: 35,
+    type: 'coins',
+    color: '#4CAF50',
+    gradient: 'linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%)',
+    locations: 'Premium supermarket chain'
+  },
+  'lotus': {
+    id: 'lotus',
+    brand: "Lotus's",
+    title: '฿100 Shopping Voucher',
+    description: 'Spend ฿500+, get ฿100 off. Thailand\'s largest hypermarket',
+    cost: 60,
+    type: 'coins',
+    color: '#00BCD4',
+    gradient: 'linear-gradient(135deg, #00BCD4 0%, #0097A7 100%)',
+    locations: '2,000+ stores nationwide'
   },
   'true-data': {
     id: 'true-data',
     brand: 'True Mobile',
     title: '1GB Data Bonus',
-    description: 'Extra 1GB 5G data for 24 hours',
+    description: 'Extra 1GB 5G data for 24 hours. Stream & navigate freely!',
     cost: 25,
     type: 'coins',
     color: '#E31937',
-    gradient: 'linear-gradient(135deg, #E31937 0%, #B31429 100%)'
+    gradient: 'linear-gradient(135deg, #E31937 0%, #B31429 100%)',
+    locations: 'Works everywhere with True coverage'
   },
   'truemoney': {
     id: 'truemoney',
     brand: 'True Money',
     title: '฿50 Cashback',
-    description: '฿50 back on first payment. Use at street vendors & markets',
+    description: '฿50 back on first payment. Use at street vendors & markets!',
     cost: 0,
     type: 'free',
     color: '#FF6F00',
-    gradient: 'linear-gradient(135deg, #FF6F00 0%, #E65100 100%)'
+    gradient: 'linear-gradient(135deg, #FF6F00 0%, #E65100 100%)',
+    locations: 'Accepted at 100,000+ merchants'
   },
-  'dairyqueen': {
-    id: 'dairyqueen',
-    brand: 'Dairy Queen',
-    title: 'Free Blizzard',
-    description: 'Free mini Blizzard with any meal',
-    cost: 45,
+  'truevisions': {
+    id: 'truevisions',
+    brand: 'True ID',
+    title: 'Free Premium Content',
+    description: '7 days of True ID Premium - movies, series, live sports',
+    cost: 40,
     type: 'coins',
-    color: '#E31937',
-    gradient: 'linear-gradient(135deg, #D4145A 0%, #9B0E3E 100%)'
+    color: '#9C27B0',
+    gradient: 'linear-gradient(135deg, #9C27B0 0%, #7B1FA2 100%)',
+    locations: 'Stream anywhere in Thailand'
   },
   'airport-fasttrack': {
     id: 'airport-fasttrack',
     brand: 'True Tourist',
     title: 'Airport Fast Track',
-    description: 'Skip immigration queues. True SIM exclusive!',
+    description: 'Skip immigration queues at BKK & DMK. True SIM exclusive!',
     cost: 100,
     type: 'coins',
     color: '#003D7C',
-    gradient: 'linear-gradient(135deg, #1565C0 0%, #0D47A1 100%)'
+    gradient: 'linear-gradient(135deg, #1565C0 0%, #0D47A1 100%)',
+    locations: 'Suvarnabhumi & Don Mueang airports'
   }
 }
 
@@ -245,31 +277,40 @@ User: "Plan a 2-day trip to Bangkok"
 → finish_building_itinerary()
 
 **CONTEXTUAL OFFERS - CP Group Benefits:**
-The tourist has these offers. When you mention one, ALWAYS call show_offer() to display the card:
+The tourist has offers from CP Group (Thailand's largest conglomerate). ALWAYS call show_offer() to display the card!
 
-OFFER IDS (use these exact IDs with show_offer):
-- "7eleven-coffee" - Free Coffee (30 coins) - mention when: hot day, morning, need energy
-- "7eleven-snack" - Snack Bundle (FREE) - mention when: day trips, walking tours
-- "pizza-bogo" - Buy 1 Get 1 Pizza (80 coins) - mention when: dinner plans, group/family
-- "swensens" - 50% Off Sundae (40 coins) - mention when: hot weather, dessert
-- "chesters" - Free Meal Upgrade (FREE) - mention when: quick lunch
-- "true-data" - 1GB Data Bonus (25 coins) - mention when: using maps, streaming
-- "truemoney" - ฿50 Cashback (FREE) - mention when: markets, street food
-- "dairyqueen" - Free Blizzard (45 coins) - mention when: hot, ice cream
-- "airport-fasttrack" - Airport Fast Track (100 coins) - mention when: airport, leaving
+CP GROUP BRANDS & OFFER IDS:
+📍 7-ELEVEN (CP ALL - 13,000+ stores):
+- "7eleven-coffee" - Free All Cafe Coffee (30 coins) - hot/cold drinks
+- "7eleven-snack" - Snack Bundle (FREE) - day trips, walking
+- "7eleven-readymeals" - Ready Meal Deal (20 coins) - quick lunch/dinner
 
-IMPORTANT: When mentioning any offer, call show_offer(offer_id) so user sees the card!
+🍗 CHESTER'S GRILL (CP Foods):
+- "chesters" - Free Meal Upgrade (FREE) - Thai-style grilled chicken
 
-Example:
-User: "It's really hot, where can I get a drink?"
-→ Respond about 7-Eleven options
-→ Call show_offer("7eleven-coffee") to display the card
+🐔 FIVE STAR CHICKEN (CP Foods):
+- "fivestar" - Family Bucket Deal (50 coins) - fried chicken, groups
 
-User: "Planning a beach day trip"
-→ Give advice about the trip  
-→ Call show_offer("7eleven-snack") to show the free snack bundle
+🛒 RETAIL:
+- "cpfresh" - CP Fresh Mart 20% Off (35 coins) - fresh food, groceries
+- "lotus" - Lotus's ฿100 Voucher (60 coins) - hypermarket shopping
 
-Don't force it - only show offers when genuinely relevant. Be helpful, not salesy.
+📱 TRUE CORPORATION:
+- "true-data" - 1GB Data Bonus (25 coins) - streaming, maps, navigation
+- "truemoney" - ฿50 Cashback (FREE) - street food, markets, vendors
+- "truevisions" - True ID Premium (40 coins) - streaming entertainment
+
+✈️ TRAVEL:
+- "airport-fasttrack" - Airport Fast Track (100 coins) - skip immigration
+
+**ALWAYS SHOW THE OFFER CARD** - When you mention ANY of these, call show_offer() immediately!
+
+Examples:
+User: "It's hot, where can I get a drink?" → show_offer("7eleven-coffee")
+User: "Need a quick lunch" → show_offer("chesters") or show_offer("fivestar")
+User: "Going to the market" → show_offer("truemoney")
+User: "Heading to the airport" → show_offer("airport-fasttrack")
+User: "Need groceries" → show_offer("lotus") or show_offer("cpfresh")
 
 **VISUAL DIRECTIONS - USE THESE TOOLS:**
 Always use these tools for step-by-step directions - visual paths are better than text!
@@ -485,13 +526,13 @@ Be conversational, enthusiastic about Thailand, and always helpful!`,
             {
               type: 'function',
               name: 'show_offer',
-              description: 'Display a relevant offer card in the chat. Use when mentioning CP Group benefits like 7-Eleven, Pizza Company, True Mobile, etc.',
+              description: 'ALWAYS display offer card when mentioning CP Group brands (7-Eleven, Chester\'s, Five Star, True, Lotus\'s). Call this immediately after mentioning any offer!',
               parameters: { 
                 type: 'object', 
                 properties: {
                   offer_id: { 
                     type: 'string', 
-                    description: 'Offer ID: 7eleven-coffee, 7eleven-snack, pizza-bogo, swensens, chesters, true-data, truemoney, dairyqueen, airport-fasttrack'
+                    description: 'CP Group offer IDs: 7eleven-coffee, 7eleven-snack, 7eleven-readymeals, chesters, fivestar, cpfresh, lotus, true-data, truemoney, truevisions, airport-fasttrack'
                   }
                 },
                 required: ['offer_id']

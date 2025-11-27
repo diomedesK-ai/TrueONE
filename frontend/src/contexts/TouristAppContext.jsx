@@ -39,16 +39,20 @@ const initialState = {
     buildingSteps: [],
   },
   
-  // Available CP Group Offers for contextual suggestions
+  // Available CP Group Offers (Thailand's largest conglomerate)
+  // Brands: 7-Eleven (CP ALL), Chester's/Five Star (CP Foods), True Corp, Lotus's, CP Fresh
   availableOffers: [
-    { id: 'coffee', brand: '7-Eleven', offer: 'Free Coffee', trigger: ['hot', 'tired', 'morning', 'coffee', 'drink'] },
-    { id: 'snack', brand: '7-Eleven', offer: 'Free Snack Bundle', trigger: ['hungry', 'snack', 'quick bite', 'walking'] },
-    { id: 'pizza', brand: 'Pizza Company', offer: 'Buy 1 Get 1 Pizza', trigger: ['dinner', 'hungry', 'family', 'group', 'pizza'] },
-    { id: 'icecream', brand: "Swensen's", offer: '50% Off Sundae', trigger: ['hot', 'dessert', 'sweet', 'ice cream', 'cool down'] },
-    { id: 'chicken', brand: "Chester's", offer: 'Free Meal Upgrade', trigger: ['lunch', 'chicken', 'fast food', 'quick'] },
-    { id: 'data', brand: 'True Mobile', offer: '1GB Data Bonus', trigger: ['data', 'internet', 'streaming', 'video', 'maps'] },
-    { id: 'payment', brand: 'True Money', offer: '฿50 Cashback', trigger: ['pay', 'market', 'street food', 'vendor'] },
-    { id: 'blizzard', brand: 'Dairy Queen', offer: 'Free Blizzard', trigger: ['ice cream', 'treat', 'sweet', 'hot'] },
+    { id: '7eleven-coffee', brand: '7-Eleven', offer: 'Free All Cafe Coffee', trigger: ['hot', 'tired', 'morning', 'coffee', 'drink', 'thirsty'] },
+    { id: '7eleven-snack', brand: '7-Eleven', offer: 'Snack Bundle', trigger: ['hungry', 'snack', 'quick bite', 'walking', 'day trip'] },
+    { id: '7eleven-readymeals', brand: '7-Eleven', offer: 'Ready Meal Deal', trigger: ['lunch', 'dinner', 'quick meal', 'cheap food'] },
+    { id: 'chesters', brand: "Chester's Grill", offer: 'Free Meal Upgrade', trigger: ['lunch', 'chicken', 'grill', 'fast food', 'quick'] },
+    { id: 'fivestar', brand: 'Five Star Chicken', offer: 'Family Bucket Deal', trigger: ['fried chicken', 'family', 'group', 'bucket', 'hungry'] },
+    { id: 'cpfresh', brand: 'CP Fresh Mart', offer: '20% Off Fresh Produce', trigger: ['groceries', 'fruits', 'vegetables', 'fresh', 'cooking'] },
+    { id: 'lotus', brand: "Lotus's", offer: '฿100 Shopping Voucher', trigger: ['shopping', 'supermarket', 'hypermarket', 'groceries', 'mall'] },
+    { id: 'true-data', brand: 'True Mobile', offer: '1GB Data Bonus', trigger: ['data', 'internet', 'streaming', 'video', 'maps', 'navigate'] },
+    { id: 'truemoney', brand: 'True Money', offer: '฿50 Cashback', trigger: ['pay', 'market', 'street food', 'vendor', 'cash'] },
+    { id: 'truevisions', brand: 'True ID', offer: 'Free Premium Streaming', trigger: ['movie', 'series', 'entertainment', 'stream', 'watch'] },
+    { id: 'airport-fasttrack', brand: 'True Tourist', offer: 'Airport Fast Track', trigger: ['airport', 'flight', 'immigration', 'leaving', 'departure'] },
   ],
   
   // Smart Offers - contextual
