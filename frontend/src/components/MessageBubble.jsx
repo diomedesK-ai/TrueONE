@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import ReactMarkdown from 'react-markdown'
+import WalkingDirections, { isWalkingDirections } from './tourist/WalkingDirections'
 import './MessageBubble.css'
 
 // Vitals Icon Component - Red gradient circle with heart
@@ -41,10 +42,14 @@ function MessageBubble({ message }) {
   }
 
   const isTheirMessage = message.role === 'them'
+  const rawText = message.translatedText || ''
+  
+  // Check if this is walking directions
+  const showWalkingDirections = isWalkingDirections(rawText)
   
   // Process message to handle custom tags and auto-highlight percentages
-  let processedText = message.translatedText?.replace(/<vitals-icon><\/vitals-icon>/g, '') || ''
-  const hasVitalsIcon = message.translatedText?.includes('<vitals-icon>')
+  let processedText = rawText.replace(/<vitals-icon><\/vitals-icon>/g, '') || ''
+  const hasVitalsIcon = rawText.includes('<vitals-icon>')
   
   // Extract vitals badge if present
   const vitalsBadgeMatch = processedText.match(/<vitals-badge>(.*?)<\/vitals-badge>/)
@@ -116,6 +121,10 @@ function MessageBubble({ message }) {
     }
   }
 
+  // Extract potential destination for walking directions (look for 7-Eleven or other landmarks)
+  const destinationMatch = rawText.match(/7-Eleven|seven.?eleven|store|restaurant|station|temple|park|mall|hotel/i)
+  const destination = destinationMatch ? destinationMatch[0] : null
+
   return (
     <div className={`message-bubble ${isTheirMessage ? 'them' : 'you'}`}>
       <div className="bubble-content">
@@ -124,9 +133,18 @@ function MessageBubble({ message }) {
         )}
         <div className="translated-text">
           {vitalsBadgeText && <span className="vitals-badge-red">{vitalsBadgeText}</span>}
-          <ReactMarkdown components={components}>
-            {processedText}
-          </ReactMarkdown>
+          
+          {/* Show visual walking directions if detected */}
+          {showWalkingDirections && isTheirMessage ? (
+            <WalkingDirections 
+              text={rawText} 
+              destination={destination}
+            />
+          ) : (
+            <ReactMarkdown components={components}>
+              {processedText}
+            </ReactMarkdown>
+          )}
         </div>
         <div className="message-footer">
           {message.audioUrl && (
