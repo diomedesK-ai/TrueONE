@@ -231,15 +231,15 @@ export default function TouristApp({
           {activationStep === 'welcome' && (
             <>
               <div className="activation-prompt">
-                <div className="prompt-line">Connect with True Mobile</div>
-                <div className="prompt-line-sub">Instant eSIM activation</div>
+                <div className="prompt-line">Connect with <span className="true-red">true</span></div>
+                <div className="prompt-line-sub">Your network. Your eSIM. Instantly.</div>
               </div>
 
               <button
                 onClick={handleActivate}
                 className="start-button"
               >
-                Get Connected
+                Connect Now
               </button>
             </>
           )}

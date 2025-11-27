@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { useTouristApp } from '../../contexts/TouristAppContext'
+import { getImageForType } from '../../utils/imageLibrary'
 import './ItineraryScreen.css'
 
 /**
@@ -46,6 +47,7 @@ export default function ItineraryScreen() {
   const buildingSteps = itinerary.buildingSteps || []
 
   // Sample itinerary data for demo with transport info
+  // Images are auto-assigned based on activity type using the smart image library
   const sampleItinerary = {
     title: 'Bangkok Discovery',
     subtitle: '3 Days Trip',
@@ -55,21 +57,21 @@ export default function ItineraryScreen() {
     avgCost: '฿15,000',
     activities: {
       1: [
-        { id: 1, time: '9:00 AM', title: 'Suvarnabhumi Airport (Arrival)', location: 'Bangkok Airport', price: 'Included', action: 'View Flight', image: 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=120&h=120&fit=crop', transport: { type: 'Airport Rail', line: 'ARL', duration: '30 min to city', fare: '฿45' } },
-        { id: 2, time: '11:30 AM', title: 'Hotel Check-in', location: 'Sukhumvit, Bangkok', price: '฿2,500/night', action: 'View Booking', image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=120&h=120&fit=crop', transport: { type: 'BTS', line: 'Sukhumvit Line', duration: '5 min walk', fare: '฿0' }, bookable: true },
-        { id: 3, time: '1:00 PM', title: 'Lunch at Thip Samai', location: 'Phra Nakhon, Bangkok', price: '~฿200/person', action: 'Get Directions', image: 'https://images.unsplash.com/photo-1569562211093-4ed0d0758f12?w=120&h=120&fit=crop', transport: { type: 'Taxi/Grab', line: '', duration: '20 min', fare: '฿100-150' } },
-        { id: 4, time: '3:00 PM', title: 'Grand Palace & Wat Phra Kaew', location: 'Na Phra Lan Road', price: '฿500/ticket', action: 'Book Ticket', image: 'https://images.unsplash.com/photo-1563492065599-3520f775eeed?w=120&h=120&fit=crop', transport: { type: 'Chao Phraya Boat', line: 'Express Boat', duration: '15 min', fare: '฿20' }, bookable: true },
+        { id: 1, time: '9:00 AM', title: 'Suvarnabhumi Airport (Arrival)', location: 'Bangkok Airport', price: 'Included', action: 'View Flight', type: 'Airport', transport: { type: 'Airport Rail', line: 'ARL', duration: '30 min to city', fare: '฿45' } },
+        { id: 2, time: '11:30 AM', title: 'Hotel Check-in', location: 'Sukhumvit, Bangkok', price: '฿2,500/night', action: 'View Booking', type: 'Hotel', transport: { type: 'BTS', line: 'Sukhumvit Line', duration: '5 min walk', fare: '฿0' }, bookable: true },
+        { id: 3, time: '1:00 PM', title: 'Lunch at Thip Samai', location: 'Phra Nakhon, Bangkok', price: '~฿200/person', action: 'Get Directions', type: 'Food', transport: { type: 'Taxi/Grab', line: '', duration: '20 min', fare: '฿100-150' } },
+        { id: 4, time: '3:00 PM', title: 'Grand Palace & Wat Phra Kaew', location: 'Na Phra Lan Road', price: '฿500/ticket', action: 'Book Ticket', type: 'Temple', transport: { type: 'Chao Phraya Boat', line: 'Express Boat', duration: '15 min', fare: '฿20' }, bookable: true },
       ],
       2: [
-        { id: 1, time: '8:00 AM', title: 'Wat Arun (Temple of Dawn)', location: 'Bangkok Yai', price: '฿100/ticket', action: 'Book Ticket', image: 'https://images.unsplash.com/photo-1528181304800-259b08848526?w=120&h=120&fit=crop', transport: { type: 'Ferry', line: 'Cross-river', duration: '5 min', fare: '฿5' }, bookable: true },
-        { id: 2, time: '11:00 AM', title: 'Chatuchak Weekend Market', location: 'Chatuchak', price: 'Free entry', action: 'Get Directions', image: 'https://images.unsplash.com/photo-1555529669-e69e7aa0ba9a?w=120&h=120&fit=crop', transport: { type: 'BTS + MRT', line: 'Mo Chit / Chatuchak Park', duration: '25 min', fare: '฿44' } },
-        { id: 3, time: '2:00 PM', title: 'Thai Massage Experience', location: 'Silom', price: '฿800/hour', action: 'Reserve', image: 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=120&h=120&fit=crop', transport: { type: 'BTS', line: 'Silom Line', duration: '20 min', fare: '฿37' }, bookable: true },
-        { id: 4, time: '7:00 PM', title: 'Rooftop Dinner', location: 'Sathorn', price: '~฿1,500/person', action: 'Reserve Table', image: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=120&h=120&fit=crop', transport: { type: 'BTS', line: 'Silom Line', duration: '10 min', fare: '฿25' }, bookable: true },
+        { id: 1, time: '8:00 AM', title: 'Wat Arun (Temple of Dawn)', location: 'Bangkok Yai', price: '฿100/ticket', action: 'Book Ticket', type: 'Temple', transport: { type: 'Ferry', line: 'Cross-river', duration: '5 min', fare: '฿5' }, bookable: true },
+        { id: 2, time: '11:00 AM', title: 'Chatuchak Weekend Market', location: 'Chatuchak', price: 'Free entry', action: 'Get Directions', type: 'Market', transport: { type: 'BTS + MRT', line: 'Mo Chit / Chatuchak Park', duration: '25 min', fare: '฿44' } },
+        { id: 3, time: '2:00 PM', title: 'Thai Massage Experience', location: 'Silom', price: '฿800/hour', action: 'Reserve', type: 'Massage', transport: { type: 'BTS', line: 'Silom Line', duration: '20 min', fare: '฿37' }, bookable: true },
+        { id: 4, time: '7:00 PM', title: 'Rooftop Dinner', location: 'Sathorn', price: '~฿1,500/person', action: 'Reserve Table', type: 'Restaurant', transport: { type: 'BTS', line: 'Silom Line', duration: '10 min', fare: '฿25' }, bookable: true },
       ],
       3: [
-        { id: 1, time: '9:00 AM', title: 'Floating Market Tour', location: 'Damnoen Saduak', price: '฿1,200/tour', action: 'Book Tour', image: 'https://images.unsplash.com/photo-1506665531195-3566af2b4dfa?w=120&h=120&fit=crop', transport: { type: 'Tour Van', line: 'Hotel pickup', duration: '1.5 hr', fare: 'Included' }, bookable: true },
-        { id: 2, time: '2:00 PM', title: 'Jim Thompson House', location: 'Pathum Wan', price: '฿200/ticket', action: 'Book Ticket', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=120&h=120&fit=crop', transport: { type: 'BTS', line: 'National Stadium', duration: '30 min', fare: '฿32' }, bookable: true },
-        { id: 3, time: '5:00 PM', title: 'Airport Transfer', location: 'Suvarnabhumi Airport', price: '฿400', action: 'Book Transfer', image: 'https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=120&h=120&fit=crop', transport: { type: 'Airport Rail', line: 'ARL Makkasan', duration: '30 min', fare: '฿45' }, bookable: true },
+        { id: 1, time: '9:00 AM', title: 'Floating Market Tour', location: 'Damnoen Saduak', price: '฿1,200/tour', action: 'Book Tour', type: 'Floating Market', transport: { type: 'Tour Van', line: 'Hotel pickup', duration: '1.5 hr', fare: 'Included' }, bookable: true },
+        { id: 2, time: '2:00 PM', title: 'Jim Thompson House', location: 'Pathum Wan', price: '฿200/ticket', action: 'Book Ticket', type: 'Museum', transport: { type: 'BTS', line: 'National Stadium', duration: '30 min', fare: '฿32' }, bookable: true },
+        { id: 3, time: '5:00 PM', title: 'Airport Transfer', location: 'Suvarnabhumi Airport', price: '฿400', action: 'Book Transfer', type: 'Transfer', transport: { type: 'Airport Rail', line: 'ARL Makkasan', duration: '30 min', fare: '฿45' }, bookable: true },
       ],
     }
   }
@@ -101,104 +103,8 @@ export default function ItineraryScreen() {
     return activitiesByDay
   }
   
-  // Pre-loaded images for different activity types - AI will specify the type
-  // This is the COMPREHENSIVE IMAGE LIBRARY for dynamic itinerary building
-  const getImageForType = (type) => {
-    const images = {
-      // Temples & Religious Sites
-      'Temple': 'https://images.unsplash.com/photo-1563492065599-3520f775eeed?w=120&h=120&fit=crop',
-      'Wat': 'https://images.unsplash.com/photo-1528181304800-259b08848526?w=120&h=120&fit=crop',
-      'Palace': 'https://images.unsplash.com/photo-1563492065599-3520f775eeed?w=120&h=120&fit=crop',
-      'Shrine': 'https://images.unsplash.com/photo-1528181304800-259b08848526?w=120&h=120&fit=crop',
-      'Buddha': 'https://images.unsplash.com/photo-1528181304800-259b08848526?w=120&h=120&fit=crop',
-      
-      // Beaches & Islands
-      'Beach': 'https://images.unsplash.com/photo-1537956965359-7573183d1f57?w=120&h=120&fit=crop',
-      'Island': 'https://images.unsplash.com/photo-1504214208698-ea1916a2195a?w=120&h=120&fit=crop',
-      'Sea': 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=120&h=120&fit=crop',
-      'Snorkel': 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=120&h=120&fit=crop',
-      'Diving': 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=120&h=120&fit=crop',
-      
-      // Food & Dining
-      'Restaurant': 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=120&h=120&fit=crop',
-      'Street Food': 'https://images.unsplash.com/photo-1569562211093-4ed0d0758f12?w=120&h=120&fit=crop',
-      'Food': 'https://images.unsplash.com/photo-1569562211093-4ed0d0758f12?w=120&h=120&fit=crop',
-      'Cafe': 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=120&h=120&fit=crop',
-      'Coffee': 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=120&h=120&fit=crop',
-      'Rooftop': 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=120&h=120&fit=crop',
-      'Bar': 'https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=120&h=120&fit=crop',
-      'Dining': 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=120&h=120&fit=crop',
-      'Lunch': 'https://images.unsplash.com/photo-1569562211093-4ed0d0758f12?w=120&h=120&fit=crop',
-      'Dinner': 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=120&h=120&fit=crop',
-      'Breakfast': 'https://images.unsplash.com/photo-1533777324565-a040eb52facd?w=120&h=120&fit=crop',
-      
-      // Shopping & Markets
-      'Market': 'https://images.unsplash.com/photo-1555529669-e69e7aa0ba9a?w=120&h=120&fit=crop',
-      'Shopping': 'https://images.unsplash.com/photo-1555529669-e69e7aa0ba9a?w=120&h=120&fit=crop',
-      'Mall': 'https://images.unsplash.com/photo-1519567241046-7f570eee3ce6?w=120&h=120&fit=crop',
-      'Night Market': 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=120&h=120&fit=crop',
-      'Floating Market': 'https://images.unsplash.com/photo-1506665531195-3566af2b4dfa?w=120&h=120&fit=crop',
-      'Bazaar': 'https://images.unsplash.com/photo-1555529669-e69e7aa0ba9a?w=120&h=120&fit=crop',
-      
-      // Culture & Museums
-      'Museum': 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=120&h=120&fit=crop',
-      'Art': 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=120&h=120&fit=crop',
-      'Gallery': 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=120&h=120&fit=crop',
-      'Culture': 'https://images.unsplash.com/photo-1577717903315-1691ae25ab3f?w=120&h=120&fit=crop',
-      'History': 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=120&h=120&fit=crop',
-      
-      // Accommodation
-      'Hotel': 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=120&h=120&fit=crop',
-      'Resort': 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=120&h=120&fit=crop',
-      'Hostel': 'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=120&h=120&fit=crop',
-      'Check-in': 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=120&h=120&fit=crop',
-      'Check-out': 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=120&h=120&fit=crop',
-      'Accommodation': 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=120&h=120&fit=crop',
-      
-      // Transport & Transit
-      'Airport': 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=120&h=120&fit=crop',
-      'Transfer': 'https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=120&h=120&fit=crop',
-      'Station': 'https://images.unsplash.com/photo-1565962062485-d8c35fe4a72d?w=120&h=120&fit=crop',
-      'Train': 'https://images.unsplash.com/photo-1565962062485-d8c35fe4a72d?w=120&h=120&fit=crop',
-      'Metro': 'https://images.unsplash.com/photo-1474487548417-781cb71495f3?w=120&h=120&fit=crop',
-      'Taxi': 'https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=120&h=120&fit=crop',
-      'Boat': 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=120&h=120&fit=crop',
-      'Ferry': 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=120&h=120&fit=crop',
-      
-      // Activities & Entertainment
-      'Tour': 'https://images.unsplash.com/photo-1506665531195-3566af2b4dfa?w=120&h=120&fit=crop',
-      'Nature': 'https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?w=120&h=120&fit=crop',
-      'Park': 'https://images.unsplash.com/photo-1585409677983-0f6c41ca9c3b?w=120&h=120&fit=crop',
-      'Garden': 'https://images.unsplash.com/photo-1585409677983-0f6c41ca9c3b?w=120&h=120&fit=crop',
-      'Massage': 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=120&h=120&fit=crop',
-      'Spa': 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=120&h=120&fit=crop',
-      'Wellness': 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=120&h=120&fit=crop',
-      'Show': 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=120&h=120&fit=crop',
-      'Entertainment': 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=120&h=120&fit=crop',
-      'Performance': 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=120&h=120&fit=crop',
-      'Nightlife': 'https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=120&h=120&fit=crop',
-      'Adventure': 'https://images.unsplash.com/photo-1501555088652-021faa106b9b?w=120&h=120&fit=crop',
-      'Safari': 'https://images.unsplash.com/photo-1516426122078-c23e76319801?w=120&h=120&fit=crop',
-      'Elephant': 'https://images.unsplash.com/photo-1564760055775-d63b17a55c44?w=120&h=120&fit=crop',
-      'Wildlife': 'https://images.unsplash.com/photo-1516426122078-c23e76319801?w=120&h=120&fit=crop',
-      'Viewpoint': 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=120&h=120&fit=crop',
-      'Sunset': 'https://images.unsplash.com/photo-1495616811223-4d98c6e9c869?w=120&h=120&fit=crop',
-      'Sunrise': 'https://images.unsplash.com/photo-1470252649378-9c29740c9fa8?w=120&h=120&fit=crop',
-      
-      // Water Activities
-      'Kayak': 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=120&h=120&fit=crop',
-      'Cruise': 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=120&h=120&fit=crop',
-      'Swimming': 'https://images.unsplash.com/photo-1530587191325-3db32d826c18?w=120&h=120&fit=crop',
-      'Pool': 'https://images.unsplash.com/photo-1575429198097-0414ec08e8cd?w=120&h=120&fit=crop',
-    }
-    // Try to match partial type names (case-insensitive)
-    const typeUpper = (type || '').toLowerCase()
-    for (const [key, url] of Object.entries(images)) {
-      if (typeUpper.includes(key.toLowerCase())) return url
-    }
-    // Default fallback image
-    return 'https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?w=120&h=120&fit=crop'
-  }
+  // Image mapping is now handled by the centralized imageLibrary utility
+  // See: src/utils/imageLibrary.js for the full category mapping
   
   // Transport suggestions based on activity type - AI can also provide specific transport
   // TRANSPORT BADGE LIBRARY - All badges styled uniformly like "SUPER APP" pill
@@ -403,7 +309,7 @@ export default function ItineraryScreen() {
                 
                 <div className="activity-card">
                   <div className="activity-row">
-                    <img className="activity-img" src={activity.image} alt={activity.title} />
+                    <img className="activity-img" src={activity.image || getImageForType(activity.type || activity.title)} alt={activity.title} />
                     <div className="activity-info">
                       <span className="activity-time">{activity.time}</span>
                       <span className="activity-name">{activity.title}</span>

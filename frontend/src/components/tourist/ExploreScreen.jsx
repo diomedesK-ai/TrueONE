@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { useTouristApp } from '../../contexts/TouristAppContext'
+import { getImageForType } from '../../utils/imageLibrary'
 import './ExploreScreen.css'
 
 export default function ExploreScreen() {
@@ -106,48 +107,16 @@ export default function ExploreScreen() {
     }
   ]
 
-  // Places to visit
+  // Places to visit - images auto-assigned by type
   const places = [
-    {
-      id: 1,
-      name: 'Grand Palace',
-      location: 'Bangkok',
-      type: 'Temple',
-      rating: '4.8',
-      image: 'https://images.unsplash.com/photo-1563492065599-3520f775eeed?w=200'
-    },
-    {
-      id: 2,
-      name: 'Wat Arun',
-      location: 'Bangkok',
-      type: 'Temple',
-      rating: '4.7',
-      image: 'https://images.unsplash.com/photo-1528181304800-259b08848526?w=200'
-    },
-    {
-      id: 3,
-      name: 'Phi Phi Islands',
-      location: 'Krabi',
-      type: 'Beach',
-      rating: '4.9',
-      image: 'https://images.unsplash.com/photo-1537956965359-7573183d1f57?w=200'
-    },
-    {
-      id: 4,
-      name: 'Chatuchak Market',
-      location: 'Bangkok',
-      type: 'Shopping',
-      rating: '4.6',
-      image: 'https://images.unsplash.com/photo-1534766555764-ce878a5add0b?w=200'
-    },
-    {
-      id: 5,
-      name: 'Doi Suthep',
-      location: 'Chiang Mai',
-      type: 'Temple',
-      rating: '4.7',
-      image: 'https://images.unsplash.com/photo-1512553757920-8e0ff5cc1c80?w=200'
-    }
+    { id: 1, name: 'Grand Palace', location: 'Bangkok', type: 'Temple', rating: '4.8' },
+    { id: 2, name: 'Wat Arun', location: 'Bangkok', type: 'Temple', rating: '4.7' },
+    { id: 3, name: 'Phi Phi Islands', location: 'Krabi', type: 'Beach', rating: '4.9' },
+    { id: 4, name: 'Chatuchak Market', location: 'Bangkok', type: 'Shopping', rating: '4.6' },
+    { id: 5, name: 'Doi Suthep', location: 'Chiang Mai', type: 'Temple', rating: '4.7' },
+    { id: 6, name: 'Floating Market', location: 'Bangkok', type: 'Market', rating: '4.5' },
+    { id: 7, name: 'Thai Massage Spa', location: 'Silom', type: 'Wellness', rating: '4.8' },
+    { id: 8, name: 'Elephant Sanctuary', location: 'Chiang Mai', type: 'Wildlife', rating: '4.9' },
   ]
 
   const handleRedeemOffer = (offer) => {
@@ -246,7 +215,7 @@ export default function ExploreScreen() {
               <div key={place.id} className="place-card">
                 <div 
                   className="place-image"
-                  style={{ backgroundImage: `url(${place.image})` }}
+                  style={{ backgroundImage: `url(${getImageForType(place.type)})` }}
                 >
                   <span className="place-rating">★ {place.rating}</span>
                 </div>
