@@ -271,47 +271,44 @@ User: "Planning a beach day trip"
 
 Don't force it - only show offers when genuinely relevant. Be helpful, not salesy.
 
-**WALKING DIRECTIONS (step-by-step):**
-For SHORT WALKS under 10 minutes, use show_walking_directions() to display a visual path with icons.
-This is MUCH better than text - shows turn-by-turn steps with icons!
+**VISUAL DIRECTIONS - USE THESE TOOLS:**
+Always use these tools for step-by-step directions - visual paths are better than text!
 
-Action types to use in steps:
-- start: Beginning of route
-- walk/continue/straight: General walking  
-- turn_left/turn_right: Turn directions
-- cross: Cross a street
-- stairs_up/stairs_down: Take stairs
-- elevator/escalator: Level changes
-- landmark: Pass notable point
-- store: Store/shop destination
-- metro/bus_stop: Transit stations
-- arrive: Final destination
+**1. WALKING (show_walking_directions):**
+For walks under 10-15 min. Actions: start, walk, continue, turn_left, turn_right, cross, stairs_up, stairs_down, elevator, landmark, arrive
+Example: { instruction: "Turn right onto Rama IV", action: "turn_right", road: "Rama IV Road", duration: "3 min" }
 
-Example: User asks "How do I walk from Lumpini Park to the nearest 7-Eleven?"
-→ show_walking_directions(
-    origin: "Lumpini Park",
-    destination: "7-Eleven",
-    total_time: "5 min",
-    total_distance: "400m",
-    steps: [
-      { instruction: "Exit via the northeast gate onto Rama IV Road", action: "start" },
-      { instruction: "Turn right and follow the sidewalk", action: "turn_right", road: "Rama IV Road", duration: "3 min" },
-      { instruction: "7-Eleven on your right", action: "arrive", side: "right" }
-    ]
-  )
+**2. BUS (show_bus_directions):**
+For bus routes. Include bus_number and fare. Actions: start, walk, bus_stop, bus_board, bus, bus_alight, transfer, arrive
+Bangkok buses: A1/A2 (Airport-Mo Chit), 73 (Silom-Khao San), 507 (Victory Monument loop)
+Example: { instruction: "Board Bus A1 to Mo Chit", action: "bus_board", bus_number: "A1", stops_count: 5, duration: "25 min" }
 
-**MAPS & DIRECTIONS (overview):**
-For LONGER routes or when user needs overview/visual map:
-Call show_map() with BOTH origin and destination.
+**3. TRAIN (show_train_directions):**
+For BTS/MRT/ARL. Actions: start, walk, bts, mrt, arl, train_board, train_alight, transfer, arrive
+BTS lines (green #5EC24D): Sukhumvit (Mo Chit↔Kheha), Silom (National Stadium↔Bang Wa)
+MRT Blue (#0066B3): Hua Lamphong↔Tao Poon (loop via Chatuchak)
+Airport Rail Link (#E31937): Phaya Thai↔Suvarnabhumi
+Example: { instruction: "Board BTS towards Kheha", action: "train_board", line: "BTS Sukhumvit", line_color: "#5EC24D", direction: "Kheha", station: "Siam" }
 
-Common Bangkok locations (use these coordinates):
+**4. BOAT (show_boat_directions):**
+For Chao Phraya boats/ferries. Actions: start, walk, pier, boat_board, boat, exit_boat, ferry, arrive
+Piers: Sathorn (S), Tha Tien (N8), Wat Arun, Phra Arthit (N13), Nonthaburi
+Flags: Orange (all stops ฿15), Yellow (express ฿29), Green (limited), Tourist Blue (฿60)
+Example: { instruction: "Take Orange Flag boat north", action: "boat_board", pier_name: "Sathorn", pier_code: "S", boat_flag: "Orange", duration: "30 min" }
+
+**5. TAXI/GRAB (show_taxi_directions):**
+For taxi/rideshare. Actions: start, walk, pickup, taxi, grab, traffic, tollway, highway, dropoff, arrive
+Include estimated_fare and traffic notes. Tollways cost extra (฿25-75 per toll).
+Example: { instruction: "Take expressway via Chalerm Maha Nakhon", action: "tollway", toll_cost: "฿50", duration: "15 min" }
+
+**MAPS & COORDINATES:**
+For overview maps, use show_map(). Common locations:
 - Lumpini Park: 13.7309, 100.5415
 - Grand Palace: 13.7500, 100.4914
 - Wat Arun: 13.7437, 100.4888
-- Wat Pho: 13.7465, 100.4927
 - Chatuchak Market: 13.7999, 100.5503
 - Siam Paragon: 13.7462, 100.5347
-- Terminal 21: 13.7377, 100.5603
+- MBK Center: 13.7449, 100.5297
 - Khao San Road: 13.7588, 100.4974
 - MBK Center: 13.7449, 100.5297
 - Chinatown (Yaowarat): 13.7394, 100.5095
@@ -574,27 +571,157 @@ Be conversational, enthusiastic about Thailand, and always helpful!`,
             {
               type: 'function',
               name: 'show_walking_directions',
-              description: 'Display a visual step-by-step walking path with icons. ALWAYS use this tool when giving walking directions. Do NOT also speak the directions - the visual display shows everything needed.',
+              description: 'Display a visual step-by-step walking path with icons. Use for SHORT walks under 10 min.',
               parameters: { 
                 type: 'object', 
                 properties: {
-                  origin: { type: 'string', description: 'Starting location name (e.g., "Lumpini Park", "Your location")' },
-                  destination: { type: 'string', description: 'End location name (e.g., "7-Eleven", "Grand Palace")' },
-                  total_time: { type: 'string', description: 'Total walking time estimate (e.g., "5 min")' },
+                  origin: { type: 'string', description: 'Starting location name' },
+                  destination: { type: 'string', description: 'End location name' },
+                  total_time: { type: 'string', description: 'Total time (e.g., "5 min")' },
                   total_distance: { type: 'string', description: 'Total distance (e.g., "400m")' },
                   steps: { 
                     type: 'array', 
-                    description: 'Array of navigation steps',
                     items: {
                       type: 'object',
                       properties: {
-                        instruction: { type: 'string', description: 'Human-readable instruction' },
-                        action: { type: 'string', description: 'Step type: start, walk, continue, straight, turn_left, turn_right, slight_left, slight_right, cross, stairs_up, stairs_down, elevator, escalator, landmark, store, metro, bus_stop, arrive' },
-                        road: { type: 'string', description: 'Road or street name' },
-                        landmark: { type: 'string', description: 'Nearby landmark' },
-                        side: { type: 'string', description: 'Which side: left or right' },
-                        duration: { type: 'string', description: 'Time for this step' },
-                        distance: { type: 'string', description: 'Distance for this step' }
+                        instruction: { type: 'string' },
+                        action: { type: 'string', description: 'start, walk, continue, turn_left, turn_right, cross, stairs_up, stairs_down, elevator, landmark, arrive' },
+                        road: { type: 'string' },
+                        landmark: { type: 'string' },
+                        side: { type: 'string', description: 'left or right' },
+                        duration: { type: 'string' },
+                        distance: { type: 'string' }
+                      },
+                      required: ['instruction', 'action']
+                    }
+                  }
+                },
+                required: ['origin', 'destination', 'steps']
+              }
+            },
+            {
+              type: 'function',
+              name: 'show_bus_directions',
+              description: 'Display visual bus route directions. Use when user asks about taking a bus.',
+              parameters: { 
+                type: 'object', 
+                properties: {
+                  origin: { type: 'string', description: 'Starting location' },
+                  destination: { type: 'string', description: 'End location' },
+                  total_time: { type: 'string', description: 'Total journey time' },
+                  fare: { type: 'string', description: 'Bus fare (e.g., "฿15")' },
+                  bus_number: { type: 'string', description: 'Bus number/route (e.g., "Bus 73", "A1 Airport Bus")' },
+                  steps: { 
+                    type: 'array', 
+                    items: {
+                      type: 'object',
+                      properties: {
+                        instruction: { type: 'string' },
+                        action: { type: 'string', description: 'start, walk, bus_stop, bus_board, bus, bus_alight, transfer, arrive' },
+                        bus_number: { type: 'string', description: 'Bus number for this step' },
+                        stop_name: { type: 'string', description: 'Bus stop name' },
+                        stops_count: { type: 'number', description: 'Number of stops to ride' },
+                        duration: { type: 'string' },
+                        wait_time: { type: 'string', description: 'Expected wait time' }
+                      },
+                      required: ['instruction', 'action']
+                    }
+                  }
+                },
+                required: ['origin', 'destination', 'steps']
+              }
+            },
+            {
+              type: 'function',
+              name: 'show_train_directions',
+              description: 'Display visual BTS/MRT/train route directions. Use when user asks about taking BTS, MRT, or Airport Rail Link.',
+              parameters: { 
+                type: 'object', 
+                properties: {
+                  origin: { type: 'string', description: 'Starting location' },
+                  destination: { type: 'string', description: 'End location' },
+                  total_time: { type: 'string', description: 'Total journey time' },
+                  total_fare: { type: 'string', description: 'Total fare (e.g., "฿44")' },
+                  steps: { 
+                    type: 'array', 
+                    items: {
+                      type: 'object',
+                      properties: {
+                        instruction: { type: 'string' },
+                        action: { type: 'string', description: 'start, walk, bts, mrt, arl, train_board, train_alight, transfer, arrive' },
+                        line: { type: 'string', description: 'Line name (BTS Sukhumvit, MRT Blue, Airport Rail Link)' },
+                        line_color: { type: 'string', description: 'Line color (#5EC24D=BTS, #0066B3=MRT Blue, #E31937=ARL)' },
+                        station: { type: 'string', description: 'Station name' },
+                        direction: { type: 'string', description: 'Train direction/terminus' },
+                        stops_count: { type: 'number', description: 'Number of stops' },
+                        duration: { type: 'string' },
+                        fare: { type: 'string' }
+                      },
+                      required: ['instruction', 'action']
+                    }
+                  }
+                },
+                required: ['origin', 'destination', 'steps']
+              }
+            },
+            {
+              type: 'function',
+              name: 'show_boat_directions',
+              description: 'Display visual boat/ferry route directions. Use for Chao Phraya Express Boat, river taxi, or cross-river ferry.',
+              parameters: { 
+                type: 'object', 
+                properties: {
+                  origin: { type: 'string', description: 'Starting location' },
+                  destination: { type: 'string', description: 'End location' },
+                  total_time: { type: 'string', description: 'Total journey time' },
+                  fare: { type: 'string', description: 'Boat fare' },
+                  boat_type: { type: 'string', description: 'Type: Express Boat (Orange/Yellow/Green flag), Tourist Boat, Cross-river Ferry' },
+                  steps: { 
+                    type: 'array', 
+                    items: {
+                      type: 'object',
+                      properties: {
+                        instruction: { type: 'string' },
+                        action: { type: 'string', description: 'start, walk, pier, boat_board, boat, exit_boat, ferry, arrive' },
+                        pier_name: { type: 'string', description: 'Pier name (e.g., Sathorn, Tha Tien)' },
+                        pier_code: { type: 'string', description: 'Pier code (e.g., N8, S1)' },
+                        boat_flag: { type: 'string', description: 'Boat flag color (Orange, Yellow, Green, Tourist Blue)' },
+                        stops_count: { type: 'number' },
+                        duration: { type: 'string' },
+                        wait_time: { type: 'string' }
+                      },
+                      required: ['instruction', 'action']
+                    }
+                  }
+                },
+                required: ['origin', 'destination', 'steps']
+              }
+            },
+            {
+              type: 'function',
+              name: 'show_taxi_directions',
+              description: 'Display taxi/Grab/Bolt ride directions. Use when user asks about taking a taxi or rideshare.',
+              parameters: { 
+                type: 'object', 
+                properties: {
+                  origin: { type: 'string', description: 'Pickup location' },
+                  destination: { type: 'string', description: 'Dropoff location' },
+                  total_time: { type: 'string', description: 'Estimated journey time' },
+                  estimated_fare: { type: 'string', description: 'Estimated fare range (e.g., "฿150-200")' },
+                  service: { type: 'string', description: 'Service type: Taxi, Grab, Bolt' },
+                  notes: { type: 'string', description: 'Tips about traffic, meter, etc.' },
+                  steps: { 
+                    type: 'array', 
+                    items: {
+                      type: 'object',
+                      properties: {
+                        instruction: { type: 'string' },
+                        action: { type: 'string', description: 'start, walk, pickup, taxi, grab, traffic, tollway, highway, dropoff, arrive' },
+                        road: { type: 'string', description: 'Major road name' },
+                        traffic: { type: 'string', description: 'Traffic condition (light, moderate, heavy)' },
+                        toll_cost: { type: 'string', description: 'Toll fee if applicable' },
+                        duration: { type: 'string' },
+                        distance: { type: 'string' }
                       },
                       required: ['instruction', 'action']
                     }
@@ -881,7 +1008,8 @@ Be conversational, enthusiastic about Thailand, and always helpful!`,
         break
         
       case 'show_walking_directions':
-        addWalkingDirectionsMessage({
+        addDirectionsMessage({
+          mode: 'walk',
           origin: args.origin,
           destination: args.destination,
           totalTime: args.total_time,
@@ -898,6 +1026,97 @@ Be conversational, enthusiastic about Thailand, and always helpful!`,
           }))
         })
         sendFunctionResult(args._callId, `Showed walking directions from ${args.origin} to ${args.destination}`)
+        break
+        
+      case 'show_bus_directions':
+        addDirectionsMessage({
+          mode: 'bus',
+          origin: args.origin,
+          destination: args.destination,
+          totalTime: args.total_time,
+          fare: args.fare,
+          busNumber: args.bus_number,
+          steps: (args.steps || []).map((step, idx) => ({
+            id: idx,
+            instruction: step.instruction,
+            action: step.action || 'bus',
+            busNumber: step.bus_number || null,
+            stopName: step.stop_name || null,
+            stopsCount: step.stops_count || null,
+            duration: step.duration || null,
+            waitTime: step.wait_time || null
+          }))
+        })
+        sendFunctionResult(args._callId, `Showed bus directions: ${args.bus_number || 'Bus'} from ${args.origin} to ${args.destination}`)
+        break
+        
+      case 'show_train_directions':
+        addDirectionsMessage({
+          mode: 'train',
+          origin: args.origin,
+          destination: args.destination,
+          totalTime: args.total_time,
+          totalFare: args.total_fare,
+          steps: (args.steps || []).map((step, idx) => ({
+            id: idx,
+            instruction: step.instruction,
+            action: step.action || 'train',
+            line: step.line || null,
+            lineColor: step.line_color || null,
+            station: step.station || null,
+            direction: step.direction || null,
+            stopsCount: step.stops_count || null,
+            duration: step.duration || null,
+            fare: step.fare || null
+          }))
+        })
+        sendFunctionResult(args._callId, `Showed train directions from ${args.origin} to ${args.destination}`)
+        break
+        
+      case 'show_boat_directions':
+        addDirectionsMessage({
+          mode: 'boat',
+          origin: args.origin,
+          destination: args.destination,
+          totalTime: args.total_time,
+          fare: args.fare,
+          boatType: args.boat_type,
+          steps: (args.steps || []).map((step, idx) => ({
+            id: idx,
+            instruction: step.instruction,
+            action: step.action || 'boat',
+            pierName: step.pier_name || null,
+            pierCode: step.pier_code || null,
+            boatFlag: step.boat_flag || null,
+            stopsCount: step.stops_count || null,
+            duration: step.duration || null,
+            waitTime: step.wait_time || null
+          }))
+        })
+        sendFunctionResult(args._callId, `Showed boat directions from ${args.origin} to ${args.destination}`)
+        break
+        
+      case 'show_taxi_directions':
+        addDirectionsMessage({
+          mode: 'taxi',
+          origin: args.origin,
+          destination: args.destination,
+          totalTime: args.total_time,
+          estimatedFare: args.estimated_fare,
+          service: args.service || 'Taxi',
+          notes: args.notes,
+          steps: (args.steps || []).map((step, idx) => ({
+            id: idx,
+            instruction: step.instruction,
+            action: step.action || 'taxi',
+            road: step.road || null,
+            traffic: step.traffic || null,
+            tollCost: step.toll_cost || null,
+            duration: step.duration || null,
+            distance: step.distance || null
+          }))
+        })
+        sendFunctionResult(args._callId, `Showed taxi directions from ${args.origin} to ${args.destination}`)
         break
     }
   }
@@ -938,10 +1157,10 @@ Be conversational, enthusiastic about Thailand, and always helpful!`,
     }])
   }
   
-  const addWalkingDirectionsMessage = (directions) => {
+  const addDirectionsMessage = (directions) => {
     setMessages(prev => [...prev, {
-      id: `walking_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-      role: 'walking_directions',
+      id: `directions_${directions.mode}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      role: 'directions',
       directions: directions,
       timestamp: new Date()
     }])
@@ -1417,8 +1636,8 @@ Be conversational and helpful, like a friendly tour guide. Keep it concise but i
                 </div>
               </div>
             </div>
-          ) : msg.role === 'walking_directions' ? (
-            <div key={msg.id} className="message walking-directions">
+          ) : msg.role === 'directions' ? (
+            <div key={msg.id} className={`message directions ${msg.directions.mode}`}>
               <WalkingDirections data={msg.directions} />
             </div>
           ) : (
