@@ -1,0 +1,335 @@
+.message-bubble {
+  display: flex;
+  margin-bottom: 10px;
+  animation: fadeIn 0.3s ease;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0 8px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.message-bubble.them {
+  justify-content: flex-start;
+}
+
+.message-bubble.you {
+  justify-content: flex-end;
+  text-align: right;
+}
+
+.bubble-content {
+  max-width: 85%;
+  padding: 10px 14px;
+  position: relative;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 16px;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(0, 212, 255, 0.15);
+  box-shadow: 0 0 15px rgba(0, 212, 255, 0.08);
+  overflow: hidden;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  box-sizing: border-box;
+}
+
+.message-bubble.them .bubble-content {
+  border-bottom-left-radius: 6px;
+  text-align: left;
+  margin-left: 4px;
+}
+
+.message-bubble.you .bubble-content {
+  border-bottom-right-radius: 6px;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 30px rgba(255, 255, 255, 0.05),
+              inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  text-align: left;
+  margin-right: 4px;
+}
+
+.original-text {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+  line-height: 1.2;
+  opacity: 0.5;
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 400;
+}
+
+.translated-text {
+  font-size: 14px;
+  font-weight: 300;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.92);
+  margin-bottom: 0;
+  letter-spacing: 0.02em;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.15);
+  max-width: 100%;
+  min-width: 0;
+  hyphens: auto;
+  -webkit-hyphens: auto;
+  -moz-hyphens: auto;
+}
+
+.message-bubble.them .translated-text {
+  color: rgba(0, 212, 255, 0.85);
+  text-shadow: 0 0 8px rgba(0, 212, 255, 0.3),
+               0 0 16px rgba(0, 212, 255, 0.15);
+}
+
+.message-bubble.you .translated-text {
+  color: rgba(255, 255, 255, 0.82);
+  text-align: right;
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.2),
+               0 0 16px rgba(255, 255, 255, 0.1);
+}
+
+.message-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-top: 4px;
+}
+
+.message-bubble.you .message-footer {
+  justify-content: flex-end;
+}
+
+.play-button {
+  width: 16px;
+  height: 16px;
+  min-width: 16px;
+  border-radius: 50%;
+  background: linear-gradient(
+    135deg,
+    rgba(0, 212, 255, 0.25),
+    rgba(10, 132, 255, 0.2)
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  border: 1.5px solid rgba(0, 212, 255, 0.3);
+  box-shadow: 0 0 15px rgba(0, 212, 255, 0.2);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  padding: 0;
+  cursor: pointer;
+}
+
+.play-button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
+  border-color: rgba(0, 212, 255, 0.5);
+}
+
+.play-button:active {
+  transform: scale(0.95);
+}
+
+.play-icon {
+  font-size: 7px;
+  color: rgba(0, 212, 255, 1);
+  margin-left: 1px;
+  filter: drop-shadow(0 0 4px rgba(0, 212, 255, 0.5));
+  line-height: 1;
+}
+
+[data-theme='light'] .bubble-content {
+  background: linear-gradient(
+    135deg,
+    rgba(0, 122, 255, 0.06),
+    rgba(175, 82, 222, 0.04)
+  );
+  border-color: rgba(0, 122, 255, 0.12);
+  box-shadow: 0 0 15px rgba(0, 122, 255, 0.08),
+              inset 0 0 15px rgba(0, 122, 255, 0.03);
+}
+
+[data-theme='light'] .message-bubble.you .bubble-content {
+  background: linear-gradient(
+    135deg,
+    rgba(52, 199, 89, 0.06),
+    rgba(48, 209, 88, 0.04)
+  );
+  border-color: rgba(52, 199, 89, 0.12);
+  box-shadow: 0 0 15px rgba(52, 199, 89, 0.08),
+              inset 0 0 15px rgba(52, 199, 89, 0.03);
+}
+
+[data-theme='light'] .play-button {
+  background: linear-gradient(
+    135deg,
+    rgba(0, 122, 255, 0.2),
+    rgba(10, 132, 255, 0.15)
+  );
+  border-color: rgba(0, 122, 255, 0.25);
+  box-shadow: 0 0 12px rgba(0, 122, 255, 0.15);
+}
+
+[data-theme='light'] .play-icon {
+  color: rgba(0, 122, 255, 1);
+  filter: drop-shadow(0 0 4px rgba(0, 122, 255, 0.4));
+}
+
+/* Markdown Highlighting Styles */
+.translated-text p {
+  margin: 0 0 4px 0;
+  word-wrap: break-word;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  max-width: 100%;
+}
+
+.translated-text p:last-child {
+  margin-bottom: 0;
+}
+
+.translated-text ul,
+.translated-text ol {
+  margin: 4px 0;
+  padding-left: 18px;
+  max-width: 100%;
+}
+
+.translated-text li {
+  margin: 2px 0;
+  padding-left: 2px;
+  word-wrap: break-word;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  line-height: 1.4;
+}
+
+.translated-text code {
+  word-wrap: break-word;
+  word-break: break-all;
+  overflow-wrap: break-word;
+  max-width: 100%;
+}
+
+.translated-text strong {
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 4px;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+/* PII Highlighting - Amber/Orange glow */
+.highlight-pii {
+  background: linear-gradient(135deg, rgba(255, 159, 10, 0.2), rgba(255, 149, 0, 0.15));
+  color: rgba(255, 159, 10, 0.95);
+  border: 1px solid rgba(255, 159, 10, 0.3);
+  box-shadow: 0 0 12px rgba(255, 159, 10, 0.25),
+              inset 0 0 8px rgba(255, 159, 10, 0.1);
+  word-wrap: break-word;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  display: inline;
+}
+
+/* Vitals Highlighting - Green/Cyan glow */
+.highlight-vitals {
+  background: linear-gradient(135deg, rgba(48, 209, 88, 0.2), rgba(52, 199, 89, 0.15));
+  color: rgba(48, 209, 88, 0.95);
+  border: 1px solid rgba(48, 209, 88, 0.3);
+  box-shadow: 0 0 12px rgba(48, 209, 88, 0.25),
+              inset 0 0 8px rgba(48, 209, 88, 0.1);
+  word-wrap: break-word;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  display: inline;
+}
+
+/* Security Percentage Highlighting - Red/Pink glow */
+.highlight-security {
+  background: linear-gradient(135deg, rgba(255, 69, 58, 0.25), rgba(255, 55, 95, 0.2));
+  color: rgba(255, 100, 80, 1);
+  padding: 2px 8px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 69, 58, 0.4);
+  box-shadow: 0 0 10px rgba(255, 69, 58, 0.35),
+              0 0 20px rgba(255, 69, 58, 0.15);
+  font-weight: 600;
+  word-wrap: break-word;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  display: inline;
+}
+
+/* Vitals Monitoring Active Badge - Red */
+.vitals-badge-red {
+  display: inline-block;
+  background: linear-gradient(135deg, rgba(255, 59, 48, 0.3), rgba(255, 45, 85, 0.25));
+  color: rgba(255, 90, 70, 1);
+  padding: 4px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 59, 48, 0.5);
+  box-shadow: 0 0 12px rgba(255, 59, 48, 0.4),
+              0 0 24px rgba(255, 59, 48, 0.2);
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 0.3px;
+  margin-right: 6px;
+}
+
+/* Default highlighting - Blue glow */
+.highlight-default {
+  background: linear-gradient(135deg, rgba(10, 132, 255, 0.2), rgba(0, 122, 255, 0.15));
+  color: rgba(10, 132, 255, 0.95);
+  border: 1px solid rgba(10, 132, 255, 0.3);
+  box-shadow: 0 0 12px rgba(10, 132, 255, 0.25),
+              inset 0 0 8px rgba(10, 132, 255, 0.1);
+}
+
+/* Inline code highlighting */
+.highlight-code {
+  background: rgba(0, 0, 0, 0.3);
+  color: rgba(0, 212, 255, 0.9);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+  font-size: 13px;
+  border: 1px solid rgba(0, 212, 255, 0.2);
+  word-wrap: break-word;
+  word-break: break-all;
+  overflow-wrap: break-word;
+  display: inline-block;
+  max-width: 100%;
+}
+
+/* Vitals Icon */
+.vitals-icon-wrapper {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 6px;
+  vertical-align: middle;
+  filter: drop-shadow(0 0 4px rgba(255, 45, 85, 0.5));
+}
+
+.vitals-icon-wrapper svg {
+  display: block;
+}

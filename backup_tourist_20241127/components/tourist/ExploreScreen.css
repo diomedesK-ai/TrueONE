@@ -1,0 +1,379 @@
+.explore-screen {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 12px 20px;
+  padding-bottom: 40px;
+}
+
+.explore-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.back-chevron {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.9);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  position: absolute;
+  left: 0;
+  padding: 0;
+}
+
+.back-chevron:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.explore-title {
+  font-size: 17px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.95);
+  margin: 0;
+  letter-spacing: -0.3px;
+}
+
+.header-spacer {
+  display: none;
+}
+
+/* Tab Switcher */
+.tab-switcher {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 12px;
+  padding: 4px;
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 10px 16px;
+  border: none;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tab-btn.active {
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+}
+
+.tab-btn:hover:not(.active) {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* Wallet Stack - iPhone Style */
+.offers-tab {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.wallet-stack {
+  flex: 1;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding-top: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-bottom: 20px;
+}
+
+.wallet-card {
+  position: relative;
+  width: 100%;
+  min-height: 95px;
+  border-radius: 16px;
+  padding: 12px 22px 18px;
+  cursor: pointer;
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  margin-bottom: -48px;
+  box-shadow: 
+    0 4px 20px rgba(0, 0, 0, 0.3),
+    0 2px 8px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.wallet-card:last-child {
+  margin-bottom: 0;
+  min-height: 200px;
+  padding: 22px 26px;
+}
+
+.wallet-card:hover:not(.locked) {
+  transform: translateY(-8px);
+  box-shadow: 
+    0 12px 35px rgba(0, 0, 0, 0.4),
+    0 4px 15px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+.wallet-card.expanded {
+  min-height: 160px;
+  margin-bottom: 10px;
+  transform: translateY(-5px);
+  box-shadow: 
+    0 15px 45px rgba(0, 0, 0, 0.45),
+    0 8px 25px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.wallet-card.locked {
+  opacity: 0.5;
+  filter: grayscale(0.5);
+}
+
+/* Top card - Credit card style */
+.wallet-card.top-card {
+  min-height: 200px;
+  padding: 22px 26px;
+  border-radius: 20px;
+}
+
+.wallet-card.top-card .card-title {
+  font-size: 28px;
+  margin-top: 10px;
+}
+
+.wallet-card.top-card .card-desc {
+  font-size: 14px;
+  margin-top: 6px;
+  line-height: 1.4;
+  opacity: 0.85;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: -2px;
+}
+
+.card-brand {
+  font-size: 9px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.6);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.card-badge {
+  font-size: 9px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.card-badge.free {
+  background: rgba(255, 255, 255, 0.25);
+  color: #fff;
+}
+
+.card-badge.coins {
+  background: rgba(0, 0, 0, 0.3);
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.card-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -0.3px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  margin-top: 0;
+}
+
+.card-desc {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.3;
+}
+
+.redeem-btn {
+  margin-top: auto;
+  padding: 10px 20px;
+  background: rgba(255, 255, 255, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 10px;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(10px);
+}
+
+.redeem-btn:hover {
+  background: rgba(255, 255, 255, 0.35);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: scale(1.02);
+}
+
+.wallet-hint {
+  text-align: center;
+  padding: 12px 0;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.4);
+  margin-top: auto;
+}
+
+/* Places Tab */
+.places-tab {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.places-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-bottom: 20px;
+}
+
+.place-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 10px;
+  transition: all 0.2s ease;
+}
+
+.place-card:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.place-image {
+  width: 60px;
+  height: 60px;
+  border-radius: 10px;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.place-rating {
+  position: absolute;
+  bottom: 4px;
+  left: 4px;
+  background: rgba(0, 0, 0, 0.7);
+  color: #FFD700;
+  font-size: 9px;
+  font-weight: 600;
+  padding: 2px 5px;
+  border-radius: 4px;
+}
+
+.place-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.place-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.95);
+  margin-bottom: 4px;
+}
+
+.place-meta {
+  display: flex;
+  gap: 8px;
+  font-size: 11px;
+}
+
+.place-location {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.place-type {
+  color: rgba(0, 153, 255, 0.8);
+}
+
+.add-itinerary-btn {
+  background: rgba(0, 153, 255, 0.15);
+  border: 1px solid rgba(0, 153, 255, 0.3);
+  color: rgba(0, 153, 255, 0.95);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.add-itinerary-btn:hover {
+  background: rgba(0, 153, 255, 0.25);
+  border-color: rgba(0, 153, 255, 0.5);
+}
+
+/* Light Theme */
+[data-theme='light'] .back-chevron {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.06);
+  color: rgba(0, 0, 0, 0.8);
+}
+
+[data-theme='light'] .explore-title {
+  color: rgba(0, 0, 0, 0.9);
+}
+
+[data-theme='light'] .tab-switcher {
+  background: rgba(0, 0, 0, 0.03);
+}
+
+[data-theme='light'] .tab-btn {
+  color: rgba(0, 0, 0, 0.4);
+}
+
+[data-theme='light'] .tab-btn.active {
+  background: rgba(0, 0, 0, 0.06);
+  color: rgba(0, 0, 0, 0.9);
+}
+
+[data-theme='light'] .wallet-hint {
+  color: rgba(0, 0, 0, 0.4);
+}
+
+[data-theme='light'] .place-card {
+  background: rgba(0, 0, 0, 0.02);
+  border-color: rgba(0, 0, 0, 0.06);
+}
+
+[data-theme='light'] .place-name {
+  color: rgba(0, 0, 0, 0.9);
+}
+
+[data-theme='light'] .place-location {
+  color: rgba(0, 0, 0, 0.5);
+}
