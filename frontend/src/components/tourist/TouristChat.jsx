@@ -148,6 +148,7 @@ function TouristChat({
   
   const pendingUserTranscript = useRef(null)
   const pendingAIResponse = useRef(null)
+  const pendingVisuals = useRef([]) // Queue for offers, maps, directions - shown AFTER AI response
   const handleRealtimeEventRef = useRef(null)
   const messagesEndRef = useRef(null)
   const videoRef = useRef(null)
@@ -1163,57 +1164,63 @@ Be conversational, enthusiastic about Thailand, and always helpful!`,
   }
   
   const addOfferMessage = (offer) => {
-    setMessages(prev => [...prev, {
+    // Queue offer to appear AFTER AI response
+    queueVisual({
       id: `offer_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
       role: 'offer',
       offer: offer,
       timestamp: new Date()
-    }])
+    })
   }
   
   const addMapMessage = (directions) => {
-    setMessages(prev => [...prev, {
+    // Queue map to appear AFTER AI response
+    queueVisual({
       id: `map_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
       role: 'map',
       directions: directions,
       timestamp: new Date()
-    }])
+    })
   }
   
   const addCurrencyMessage = (conversion) => {
-    setMessages(prev => [...prev, {
+    // Queue currency card to appear AFTER AI response
+    queueVisual({
       id: `currency_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
       role: 'currency',
       conversion: conversion,
       timestamp: new Date()
-    }])
+    })
   }
   
   const addTransportMessage = (route) => {
-    setMessages(prev => [...prev, {
+    // Queue transport card to appear AFTER AI response
+    queueVisual({
       id: `transport_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
       role: 'transport',
       route: route,
       timestamp: new Date()
-    }])
+    })
   }
   
   const addDirectionsMessage = (directions) => {
-    setMessages(prev => [...prev, {
+    // Queue directions to appear AFTER AI response
+    queueVisual({
       id: `directions_${directions.mode}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
       role: 'directions',
       directions: directions,
       timestamp: new Date()
-    }])
+    })
   }
   
   const addAtmMessage = (atm) => {
-    setMessages(prev => [...prev, {
+    // Queue ATM card to appear AFTER AI response
+    queueVisual({
       id: `atm_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
       role: 'atm',
       atm: atm,
       timestamp: new Date()
-    }])
+    })
   }
   
   const sendFunctionResult = (callId, output) => {
@@ -1338,13 +1345,27 @@ Be conversational and helpful, like a friendly tour guide. Keep it concise but i
       )
       if (isDuplicate) return prev
       
-      return [...prev, {
+      const newMessage = {
         id: `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
         role,
         content,
         timestamp: new Date()
-      }]
+      }
+      
+      // If this is an assistant message, flush any pending visuals AFTER it
+      if (role === 'assistant' && pendingVisuals.current.length > 0) {
+        const visuals = [...pendingVisuals.current]
+        pendingVisuals.current = []
+        return [...prev, newMessage, ...visuals]
+      }
+      
+      return [...prev, newMessage]
     })
+  }
+  
+  // Queue a visual element (offer, map, directions) to appear after AI response
+  const queueVisual = (visualMessage) => {
+    pendingVisuals.current.push(visualMessage)
   }
 
   const toggleRecording = async () => {
