@@ -1,135 +1,69 @@
 import React, { useState, useEffect } from 'react'
+import { getDirectionIcon, getLineColor, IconRightSide, IconLeftSide } from './DirectionIcons'
 import './WalkingDirections.css'
 
 /**
- * Parses navigation text and extracts walking steps
- * Looks for patterns like directions, landmarks, distances
+ * WalkingDirections - Dynamic Visual Path Component
+ * 
+ * Accepts EITHER:
+ * 1. Structured data (from Realtime API tool call) - preferred
+ * 2. Raw text (legacy fallback with parsing)
+ * 
+ * Renders an animated path with dynamic icons stitched together
  */
-function parseDirectionsText(text) {
-  if (!text) return null
+export default function WalkingDirections({ 
+  // Structured data props (from tool call)
+  data = null,
   
-  const steps = []
-  
-  // Common direction patterns to detect
-  const directionPatterns = [
-    /head\s+(out\s+)?(toward|to|towards)\s+([^,.]+)/gi,
-    /follow\s+([^,.]+)/gi,
-    /turn\s+(left|right)\s+([^,.]+)?/gi,
-    /continue\s+(along|on|straight)\s*([^,.]*)/gi,
-    /cross\s+([^,.]+)/gi,
-    /walk\s+(along|down|up|through)\s+([^,.]+)/gi,
-    /you('ll|'ll|\s+will)\s+(see|spot|find|reach)\s+([^,.]+)/gi,
-    /on\s+the\s+(left|right)(-hand)?\s+side/gi,
-    /it's\s+(just\s+)?(a\s+few\s+)?(minutes?|meters?|steps?)/gi,
-  ]
-  
-  // Try to split by sentences and extract meaningful steps
-  const sentences = text.split(/[.!]\s+/).filter(s => s.trim())
-  
-  sentences.forEach((sentence, idx) => {
-    const s = sentence.trim()
-    if (!s) return
-    
-    // Determine step type based on content
-    let type = 'walk'
-    let icon = 'walk'
-    
-    if (/head|start|from|begin/i.test(s)) {
-      type = 'start'
-      icon = 'start'
-    } else if (/arrive|destination|you('ll|'ll|\s+will)\s+(see|spot|find|reach)|on\s+the\s+(left|right)/i.test(s)) {
-      type = 'destination'
-      icon = 'destination'
-    } else if (/turn\s+(left|right)/i.test(s)) {
-      type = 'turn'
-      icon = /left/i.test(s) ? 'turn-left' : 'turn-right'
-    } else if (/cross|crossing/i.test(s)) {
-      type = 'cross'
-      icon = 'cross'
-    } else if (/follow|continue|along/i.test(s)) {
-      type = 'continue'
-      icon = 'straight'
-    }
-    
-    // Extract time/distance if present
-    let duration = null
-    const timeMatch = s.match(/(\d+)\s*(min|minute|minutes|m)/i)
-    const distMatch = s.match(/(\d+)\s*(meter|meters|m|km)/i)
-    const fewMinMatch = s.match(/(few|couple)\s+minutes?/i)
-    
-    if (timeMatch) {
-      duration = `${timeMatch[1]} min`
-    } else if (fewMinMatch) {
-      duration = '2-3 min'
-    } else if (distMatch) {
-      duration = `${distMatch[1]}${distMatch[2].toLowerCase()}`
-    }
-    
-    steps.push({
-      id: idx,
-      text: s.replace(/^\s*and\s+/i, '').trim(),
-      type,
-      icon,
-      duration,
-    })
-  })
-  
-  return steps.length > 0 ? steps : null
-}
-
-/**
- * Check if text looks like walking directions
- */
-export function isWalkingDirections(text) {
-  if (!text || text.length < 30) return false
-  
-  const directionKeywords = [
-    'head', 'walk', 'turn', 'follow', 'continue', 'cross',
-    'left', 'right', 'straight', 'along', 'toward', 'towards',
-    'minutes', 'meters', 'steps', 'sidewalk', 'road', 'street',
-    'you\'ll see', 'you\'ll spot', 'you\'ll find', 'on the right', 'on the left'
-  ]
-  
-  const matchCount = directionKeywords.filter(kw => 
-    text.toLowerCase().includes(kw)
-  ).length
-  
-  return matchCount >= 3
-}
-
-export default function WalkingDirections({ text, origin, destination }) {
+  // Legacy text props (fallback)
+  text = null,
+  origin: textOrigin = null,
+  destination: textDestination = null,
+}) {
   const [steps, setSteps] = useState([])
-  const [isExpanded, setIsExpanded] = useState(true)
   const [animatedSteps, setAnimatedSteps] = useState([])
-  
+  const [isExpanded, setIsExpanded] = useState(true)
+  const [displayOrigin, setDisplayOrigin] = useState('')
+  const [displayDestination, setDisplayDestination] = useState('')
+  const [totalTime, setTotalTime] = useState(null)
+  const [totalDistance, setTotalDistance] = useState(null)
+
   useEffect(() => {
-    const parsed = parseDirectionsText(text)
-    if (parsed) {
-      setSteps(parsed)
-      // Animate steps appearing one by one
-      parsed.forEach((_, idx) => {
+    // Reset animation state
+    setAnimatedSteps([])
+    
+    if (data) {
+      // === STRUCTURED DATA MODE ===
+      setSteps(data.steps || [])
+      setDisplayOrigin(data.origin || 'Your Location')
+      setDisplayDestination(data.destination || 'Destination')
+      setTotalTime(data.totalTime)
+      setTotalDistance(data.totalDistance)
+    } else if (text) {
+      // === TEXT PARSING FALLBACK ===
+      const parsed = parseDirectionsText(text)
+      if (parsed) {
+        setSteps(parsed.steps)
+        setDisplayOrigin(textOrigin || parsed.origin || 'Your Location')
+        setDisplayDestination(textDestination || parsed.destination || 'Destination')
+        setTotalTime(parsed.totalTime)
+      }
+    }
+  }, [data, text, textOrigin, textDestination])
+
+  // Animate steps appearing one by one
+  useEffect(() => {
+    if (steps.length > 0) {
+      steps.forEach((_, idx) => {
         setTimeout(() => {
           setAnimatedSteps(prev => [...prev, idx])
-        }, idx * 150)
+        }, idx * 120 + 100)
       })
     }
-  }, [text])
-  
+  }, [steps])
+
   if (!steps.length) return null
-  
-  // Extract origin/destination from first/last steps if not provided
-  const displayOrigin = origin || (steps[0]?.text.match(/from\s+([^,]+)/i)?.[1] || 'Your Location')
-  const displayDestination = destination || '7-Eleven'
-  
-  // Calculate total time
-  const totalTime = steps.reduce((acc, step) => {
-    if (step.duration) {
-      const mins = parseInt(step.duration) || 2
-      return acc + mins
-    }
-    return acc + 1
-  }, 0)
-  
+
   return (
     <div className="walking-directions">
       {/* Header */}
@@ -144,48 +78,60 @@ export default function WalkingDirections({ text, origin, destination }) {
           <span className="wd-destination">{displayDestination}</span>
         </div>
         <div className="wd-meta">
-          <span className="wd-time">{totalTime} min walk</span>
+          {totalTime && <span className="wd-time">{totalTime}</span>}
+          {totalDistance && <span className="wd-distance">{totalDistance}</span>}
           <span className="wd-expand-icon">{isExpanded ? '−' : '+'}</span>
         </div>
       </div>
-      
+
       {/* Steps Timeline */}
       {isExpanded && (
         <div className="wd-timeline">
           {steps.map((step, idx) => (
             <div 
-              key={step.id} 
-              className={`wd-step ${step.type} ${animatedSteps.includes(idx) ? 'visible' : ''}`}
-              style={{ animationDelay: `${idx * 100}ms` }}
+              key={step.id ?? idx}
+              className={`wd-step ${step.action || 'walk'} ${animatedSteps.includes(idx) ? 'visible' : ''}`}
             >
-              {/* Timeline connector */}
+              {/* Timeline connector with dynamic icons */}
               <div className="wd-connector">
-                <div className={`wd-dot ${step.type}`}>
-                  {step.type === 'start' && (
-                    <div className="wd-dot-inner start"></div>
-                  )}
-                  {step.type === 'destination' && (
-                    <div className="wd-dot-inner destination"></div>
-                  )}
-                  {step.type === 'turn' && (
-                    <svg className="wd-turn-icon" width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
-                      {step.icon === 'turn-left' ? (
-                        <path d="M14 6l-6 6 6 6V6z"/>
-                      ) : (
-                        <path d="M10 6l6 6-6 6V6z"/>
-                      )}
-                    </svg>
-                  )}
+                <div className={`wd-icon-wrapper ${step.action || 'walk'}`}>
+                  {getDirectionIcon(step.action || 'walk', 22)}
                 </div>
-                {idx < steps.length - 1 && <div className="wd-line"></div>}
+                {idx < steps.length - 1 && (
+                  <div 
+                    className="wd-line" 
+                    style={{ background: getLineColor(step.action) }}
+                  />
+                )}
               </div>
-              
+
               {/* Step content */}
               <div className="wd-content">
-                <p className="wd-instruction">{step.text}</p>
-                {step.duration && (
-                  <span className="wd-duration">{step.duration}</span>
+                <p className="wd-instruction">
+                  {step.instruction}
+                  {step.side && (
+                    <span className={`wd-side-indicator ${step.side}`}>
+                      {step.side === 'right' ? <IconRightSide size={14} /> : <IconLeftSide size={14} />}
+                    </span>
+                  )}
+                </p>
+                
+                {/* Road/landmark info */}
+                {(step.road || step.landmark) && (
+                  <span className="wd-road">
+                    {step.road || step.landmark}
+                  </span>
                 )}
+                
+                {/* Duration/distance badges */}
+                <div className="wd-step-meta">
+                  {step.duration && (
+                    <span className="wd-duration">{step.duration}</span>
+                  )}
+                  {step.distance && (
+                    <span className="wd-step-distance">{step.distance}</span>
+                  )}
+                </div>
               </div>
             </div>
           ))}
@@ -195,3 +141,135 @@ export default function WalkingDirections({ text, origin, destination }) {
   )
 }
 
+/**
+ * LEGACY: Parse free-text directions into structured steps
+ * Used as fallback when API returns text instead of structured data
+ */
+function parseDirectionsText(text) {
+  if (!text) return null
+
+  const steps = []
+  let detectedOrigin = null
+  let detectedDestination = null
+
+  // Try to extract origin from text
+  const originMatch = text.match(/from\s+([^,.\n]+)/i)
+  if (originMatch) detectedOrigin = originMatch[1].trim()
+
+  // Try to extract destination
+  const destMatch = text.match(/(7-Eleven|seven.?eleven|store|restaurant|station|temple|park|mall|hotel|[A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)/i)
+  if (destMatch) detectedDestination = destMatch[1]
+
+  // Split by sentences
+  const sentences = text.split(/[.!]\s+/).filter(s => s.trim())
+
+  sentences.forEach((sentence, idx) => {
+    const s = sentence.trim()
+    if (!s || s.length < 10) return
+
+    // Determine action type
+    let action = 'walk'
+    
+    if (idx === 0 || /^(from|start|begin|head\s+out|exit)/i.test(s)) {
+      action = 'start'
+    } else if (/arrive|destination|you('ll|'ll|\s+will)\s+(see|spot|find|reach)|on\s+(your\s+)?(the\s+)?(left|right)/i.test(s)) {
+      action = 'arrive'
+    } else if (/turn\s+(left|sharp\s+left)/i.test(s)) {
+      action = 'turn_left'
+    } else if (/turn\s+(right|sharp\s+right)/i.test(s)) {
+      action = 'turn_right'
+    } else if (/bear\s+left|slight(ly)?\s+left|veer\s+left/i.test(s)) {
+      action = 'slight_left'
+    } else if (/bear\s+right|slight(ly)?\s+right|veer\s+right/i.test(s)) {
+      action = 'slight_right'
+    } else if (/cross|crossing|crosswalk/i.test(s)) {
+      action = 'cross'
+    } else if (/stair.*up|upstairs|go\s+up/i.test(s)) {
+      action = 'stairs_up'
+    } else if (/stair.*down|downstairs|go\s+down/i.test(s)) {
+      action = 'stairs_down'
+    } else if (/elevator|lift/i.test(s)) {
+      action = 'elevator'
+    } else if (/escalator/i.test(s)) {
+      action = 'escalator'
+    } else if (/bts|mrt|metro|station|skytrain/i.test(s)) {
+      action = 'metro'
+    } else if (/bus\s+stop|bus\s+station/i.test(s)) {
+      action = 'bus_stop'
+    } else if (/follow|continue|along|straight/i.test(s)) {
+      action = 'continue'
+    }
+
+    // Extract side indicator
+    let side = null
+    if (/on\s+(your\s+)?(the\s+)?right/i.test(s)) side = 'right'
+    if (/on\s+(your\s+)?(the\s+)?left/i.test(s)) side = 'left'
+
+    // Extract road name
+    let road = null
+    const roadMatch = s.match(/(along|on|onto)\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*\s*(Road|Street|Soi|Avenue|Blvd|Lane)?)/i)
+    if (roadMatch) road = roadMatch[2]
+
+    // Extract duration
+    let duration = null
+    const timeMatch = s.match(/(\d+)\s*(min|minute|minutes)/i)
+    const fewMinMatch = s.match(/(few|couple)\s+minutes?/i)
+    if (timeMatch) duration = `${timeMatch[1]} min`
+    else if (fewMinMatch) duration = '2-3 min'
+
+    // Extract distance
+    let distance = null
+    const distMatch = s.match(/(\d+)\s*(m|meters?|km)/i)
+    if (distMatch) distance = `${distMatch[1]}${distMatch[2].toLowerCase()}`
+
+    steps.push({
+      id: idx,
+      instruction: s.replace(/^\s*(and\s+)?/i, '').trim(),
+      action,
+      road,
+      side,
+      duration,
+      distance,
+      landmark: null,
+    })
+  })
+
+  // Calculate total time
+  let totalTime = null
+  const totalMins = steps.reduce((acc, step) => {
+    if (step.duration) {
+      const mins = parseInt(step.duration) || 2
+      return acc + mins
+    }
+    return acc + 1
+  }, 0)
+  if (totalMins > 0) totalTime = `${totalMins} min`
+
+  return steps.length > 0 ? {
+    steps,
+    origin: detectedOrigin,
+    destination: detectedDestination,
+    totalTime,
+  } : null
+}
+
+/**
+ * Check if text looks like walking directions
+ */
+export function isWalkingDirections(text) {
+  if (!text || text.length < 30) return false
+
+  const directionKeywords = [
+    'head', 'walk', 'turn', 'follow', 'continue', 'cross',
+    'left', 'right', 'straight', 'along', 'toward', 'towards',
+    'minutes', 'meters', 'steps', 'sidewalk', 'road', 'street',
+    "you'll see", "you'll spot", "you'll find", 'on the right', 'on the left',
+    'exit', 'gate', 'entrance'
+  ]
+
+  const matchCount = directionKeywords.filter(kw =>
+    text.toLowerCase().includes(kw)
+  ).length
+
+  return matchCount >= 3
+}

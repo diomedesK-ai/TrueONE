@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { useTouristApp } from '../../contexts/TouristAppContext'
+import WalkingDirections from './WalkingDirections'
 import './TouristChat.css'
 
 // Available offers that can be shown inline
@@ -270,14 +271,38 @@ User: "Planning a beach day trip"
 
 Don't force it - only show offers when genuinely relevant. Be helpful, not salesy.
 
-**MAPS & DIRECTIONS:**
-When user asks "where is...", "how do I get to...", "show me directions", or after identifying a landmark in a photo:
-Call show_map() with BOTH origin and destination to show directions!
+**WALKING DIRECTIONS (step-by-step):**
+For SHORT WALKS under 10 minutes, use show_walking_directions() to display a visual path with icons.
+This is MUCH better than text - shows turn-by-turn steps with icons!
 
-ALWAYS include:
-- origin_lat, origin_lng, origin_name: Where user is starting from
-- dest_lat, dest_lng, dest_name: Where they want to go
-- transport: "walk", "transit", or "drive"
+Action types to use in steps:
+- start: Beginning of route
+- walk/continue/straight: General walking  
+- turn_left/turn_right: Turn directions
+- cross: Cross a street
+- stairs_up/stairs_down: Take stairs
+- elevator/escalator: Level changes
+- landmark: Pass notable point
+- store: Store/shop destination
+- metro/bus_stop: Transit stations
+- arrive: Final destination
+
+Example: User asks "How do I walk from Lumpini Park to the nearest 7-Eleven?"
+→ show_walking_directions(
+    origin: "Lumpini Park",
+    destination: "7-Eleven",
+    total_time: "5 min",
+    total_distance: "400m",
+    steps: [
+      { instruction: "Exit via the northeast gate onto Rama IV Road", action: "start" },
+      { instruction: "Turn right and follow the sidewalk", action: "turn_right", road: "Rama IV Road", duration: "3 min" },
+      { instruction: "7-Eleven on your right", action: "arrive", side: "right" }
+    ]
+  )
+
+**MAPS & DIRECTIONS (overview):**
+For LONGER routes or when user needs overview/visual map:
+Call show_map() with BOTH origin and destination.
 
 Common Bangkok locations (use these coordinates):
 - Lumpini Park: 13.7309, 100.5415
@@ -290,17 +315,8 @@ Common Bangkok locations (use these coordinates):
 - Khao San Road: 13.7588, 100.4974
 - MBK Center: 13.7449, 100.5297
 - Chinatown (Yaowarat): 13.7394, 100.5095
-- Asiatique: 13.7057, 100.5014
-- Victory Monument: 13.7649, 100.5383
 
-Example flows:
-1. User: "I'm at Lumpini Park, where's the nearest 7-Eleven?"
-   → show_map(origin_lat: 13.7309, origin_lng: 100.5415, origin_name: "Lumpini Park", dest_lat: 13.7315, dest_lng: 100.5438, dest_name: "7-Eleven Rama IV", transport: "walk")
-
-2. User shows photo of Wat Arun → You identify it → "Would you like directions?"
-   → If yes: Ask where they are, then show_map with their location as origin
-
-3. User: "How do I get from Siam to Grand Palace?"
+Example: User asks "How do I get from Siam to Grand Palace?"
    → show_map(origin_lat: 13.7462, origin_lng: 100.5347, origin_name: "Siam Paragon", dest_lat: 13.7500, dest_lng: 100.4914, dest_name: "Grand Palace", transport: "transit")
 
 **CURRENCY CONVERSION:**
@@ -553,6 +569,38 @@ Be conversational, enthusiastic about Thailand, and always helpful!`,
                   tip: { type: 'string', description: 'Helpful tip about this ATM/bank' }
                 },
                 required: ['bank_name', 'location', 'fee', 'latitude', 'longitude']
+              }
+            },
+            {
+              type: 'function',
+              name: 'show_walking_directions',
+              description: 'Display a visual step-by-step walking path with icons. ALWAYS use this tool when giving walking directions. Do NOT also speak the directions - the visual display shows everything needed.',
+              parameters: { 
+                type: 'object', 
+                properties: {
+                  origin: { type: 'string', description: 'Starting location name (e.g., "Lumpini Park", "Your location")' },
+                  destination: { type: 'string', description: 'End location name (e.g., "7-Eleven", "Grand Palace")' },
+                  total_time: { type: 'string', description: 'Total walking time estimate (e.g., "5 min")' },
+                  total_distance: { type: 'string', description: 'Total distance (e.g., "400m")' },
+                  steps: { 
+                    type: 'array', 
+                    description: 'Array of navigation steps',
+                    items: {
+                      type: 'object',
+                      properties: {
+                        instruction: { type: 'string', description: 'Human-readable instruction' },
+                        action: { type: 'string', description: 'Step type: start, walk, continue, straight, turn_left, turn_right, slight_left, slight_right, cross, stairs_up, stairs_down, elevator, escalator, landmark, store, metro, bus_stop, arrive' },
+                        road: { type: 'string', description: 'Road or street name' },
+                        landmark: { type: 'string', description: 'Nearby landmark' },
+                        side: { type: 'string', description: 'Which side: left or right' },
+                        duration: { type: 'string', description: 'Time for this step' },
+                        distance: { type: 'string', description: 'Distance for this step' }
+                      },
+                      required: ['instruction', 'action']
+                    }
+                  }
+                },
+                required: ['origin', 'destination', 'steps']
               }
             }
           ]
@@ -831,6 +879,26 @@ Be conversational, enthusiastic about Thailand, and always helpful!`,
         })
         sendFunctionResult(args._callId, `Showed ${args.bank_name} ATM at ${args.location}`)
         break
+        
+      case 'show_walking_directions':
+        addWalkingDirectionsMessage({
+          origin: args.origin,
+          destination: args.destination,
+          totalTime: args.total_time,
+          totalDistance: args.total_distance,
+          steps: (args.steps || []).map((step, idx) => ({
+            id: idx,
+            instruction: step.instruction,
+            action: step.action || 'walk',
+            road: step.road || null,
+            landmark: step.landmark || null,
+            side: step.side || null,
+            duration: step.duration || null,
+            distance: step.distance || null
+          }))
+        })
+        sendFunctionResult(args._callId, `Showed walking directions from ${args.origin} to ${args.destination}`)
+        break
     }
   }
   
@@ -866,6 +934,15 @@ Be conversational, enthusiastic about Thailand, and always helpful!`,
       id: `transport_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
       role: 'transport',
       route: route,
+      timestamp: new Date()
+    }])
+  }
+  
+  const addWalkingDirectionsMessage = (directions) => {
+    setMessages(prev => [...prev, {
+      id: `walking_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      role: 'walking_directions',
+      directions: directions,
       timestamp: new Date()
     }])
   }
@@ -1339,6 +1416,10 @@ Be conversational and helpful, like a friendly tour guide. Keep it concise but i
                   />
                 </div>
               </div>
+            </div>
+          ) : msg.role === 'walking_directions' ? (
+            <div key={msg.id} className="message walking-directions">
+              <WalkingDirections data={msg.directions} />
             </div>
           ) : (
             <div key={msg.id} className={`message ${msg.role}`}>
