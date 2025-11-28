@@ -41,7 +41,7 @@ export default function LoyaltyHub() {
         <div className="card-content">
           <div className="card-top">
             <span className="card-label">TrueCoins</span>
-            <span className="card-network">true</span>
+            <span className="card-network">TRUE</span>
           </div>
           <div className="card-balance">
             <span className="balance-value">{loyalty.balance}</span>
