@@ -224,6 +224,16 @@ function TouristChat({
 3. **Recommendations** - Suggest places, food, experiences
 4. **Itinerary Building** - Create step-by-step travel plans
 5. **Camera/Photos** - Take photos and analyze what they see
+6. **Web Search** - You have NATIVE web search! Use it to look up real-time info
+
+**⚠️ IMPORTANT - WEB SEARCH:**
+You have built-in web search capability. ALWAYS search the web when user asks about:
+- Specific shops/stores (Alo Yoga, Lululemon, Zara, etc.)
+- Restaurant addresses, hours, prices
+- "Is there a [business] near [location]?"
+- Current events, prices, availability
+- Any specific business or establishment
+NEVER guess about businesses - search first!
 
 **FUNCTION CALLING - Use these functions:**
 
