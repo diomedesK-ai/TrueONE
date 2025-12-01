@@ -10,8 +10,8 @@
  *   const imageUrl = getImageForType('Wat Arun') // Matches 'Wat' → temple image
  */
 
-// Primary image library - curated reliable images
-// Using picsum.photos for reliable placeholders with consistent sizing
+// Primary image library - curated realistic photos with silver/monochrome aesthetic
+// Using Unsplash for reliable, beautiful Thailand-themed images
 const IMAGE_LIBRARY = {
   // ============================================
   // TEMPLES & RELIGIOUS SITES
@@ -20,6 +20,12 @@ const IMAGE_LIBRARY = {
     keywords: ['temple', 'wat', 'palace', 'shrine', 'buddha', 'pagoda', 'monastery', 'grand palace', 'emerald'],
     color: '#D4AF37',
     gradient: 'linear-gradient(135deg, #D4AF37 0%, #8B6914 100%)',
+    // Thai temple - golden spires
+    images: [
+      'https://images.unsplash.com/photo-1563492065599-3520f775eeed?w=400&h=300&fit=crop&auto=format',
+      'https://images.unsplash.com/photo-1528181304800-259b08848526?w=400&h=300&fit=crop&auto=format',
+      'https://images.unsplash.com/photo-1506665531195-3566af2b4dfa?w=400&h=300&fit=crop&auto=format',
+    ],
   },
   
   // ============================================
@@ -29,6 +35,12 @@ const IMAGE_LIBRARY = {
     keywords: ['beach', 'island', 'sea', 'ocean', 'coast', 'bay', 'phi phi', 'phuket', 'krabi', 'koh', 'samui', 'coral', 'sand'],
     color: '#00CED1',
     gradient: 'linear-gradient(135deg, #00CED1 0%, #008B8B 100%)',
+    // Thai beaches - crystal clear waters
+    images: [
+      'https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?w=400&h=300&fit=crop&auto=format',
+      'https://images.unsplash.com/photo-1537956965359-7573183d1f57?w=400&h=300&fit=crop&auto=format',
+      'https://images.unsplash.com/photo-1504214208698-ea1916a2195a?w=400&h=300&fit=crop&auto=format',
+    ],
   },
   
   // ============================================
@@ -38,6 +50,12 @@ const IMAGE_LIBRARY = {
     keywords: ['restaurant', 'food', 'dining', 'lunch', 'dinner', 'breakfast', 'cafe', 'coffee', 'street food', 'rooftop', 'bar', 'thai food', 'pad thai', 'tom yum'],
     color: '#FF6B35',
     gradient: 'linear-gradient(135deg, #FF6B35 0%, #CC4400 100%)',
+    // Thai food - street food and cuisine
+    images: [
+      'https://images.unsplash.com/photo-1559314809-0d155014e29e?w=400&h=300&fit=crop&auto=format',
+      'https://images.unsplash.com/photo-1562565652-a0d8f0c59eb4?w=400&h=300&fit=crop&auto=format',
+      'https://images.unsplash.com/photo-1455619452474-d2be8b1e70cd?w=400&h=300&fit=crop&auto=format',
+    ],
   },
   
   // ============================================
@@ -47,6 +65,12 @@ const IMAGE_LIBRARY = {
     keywords: ['market', 'shopping', 'mall', 'bazaar', 'chatuchak', 'night market', 'floating market', 'weekend market', 'store', 'shop'],
     color: '#9B59B6',
     gradient: 'linear-gradient(135deg, #9B59B6 0%, #6C3483 100%)',
+    // Thai markets - vibrant stalls
+    images: [
+      'https://images.unsplash.com/photo-1555529771-835f59fc5efe?w=400&h=300&fit=crop&auto=format',
+      'https://images.unsplash.com/photo-1534274988757-a28bf1a57c17?w=400&h=300&fit=crop&auto=format',
+      'https://images.unsplash.com/photo-1569154941061-e231b4725ef1?w=400&h=300&fit=crop&auto=format',
+    ],
   },
   
   // ============================================
@@ -56,6 +80,12 @@ const IMAGE_LIBRARY = {
     keywords: ['nature', 'park', 'garden', 'mountain', 'waterfall', 'jungle', 'forest', 'national park', 'doi', 'hill', 'viewpoint', 'sunset', 'sunrise', 'trek', 'hike'],
     color: '#27AE60',
     gradient: 'linear-gradient(135deg, #27AE60 0%, #1E8449 100%)',
+    // Thai nature - lush greenery
+    images: [
+      'https://images.unsplash.com/photo-1518002054494-3a6f94352e9d?w=400&h=300&fit=crop&auto=format',
+      'https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=400&h=300&fit=crop&auto=format',
+      'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=400&h=300&fit=crop&auto=format',
+    ],
   },
   
   // ============================================
@@ -65,6 +95,12 @@ const IMAGE_LIBRARY = {
     keywords: ['hotel', 'resort', 'hostel', 'accommodation', 'check-in', 'check-out', 'stay', 'room', 'villa', 'guesthouse'],
     color: '#3498DB',
     gradient: 'linear-gradient(135deg, #3498DB 0%, #2471A3 100%)',
+    // Luxury Thai hotels
+    images: [
+      'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&h=300&fit=crop&auto=format',
+      'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=400&h=300&fit=crop&auto=format',
+      'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=400&h=300&fit=crop&auto=format',
+    ],
   },
   
   // ============================================
@@ -74,6 +110,12 @@ const IMAGE_LIBRARY = {
     keywords: ['airport', 'station', 'transfer', 'train', 'metro', 'bts', 'mrt', 'taxi', 'boat', 'ferry', 'bus', 'van', 'flight', 'departure', 'arrival'],
     color: '#34495E',
     gradient: 'linear-gradient(135deg, #34495E 0%, #1C2833 100%)',
+    // Transport in Thailand
+    images: [
+      'https://images.unsplash.com/photo-1540962351504-03099e0a754b?w=400&h=300&fit=crop&auto=format',
+      'https://images.unsplash.com/photo-1474487548417-781cb71495f3?w=400&h=300&fit=crop&auto=format',
+      'https://images.unsplash.com/photo-1556388158-158ea5ccacbd?w=400&h=300&fit=crop&auto=format',
+    ],
   },
   
   // ============================================
@@ -83,6 +125,12 @@ const IMAGE_LIBRARY = {
     keywords: ['museum', 'art', 'gallery', 'culture', 'history', 'heritage', 'traditional', 'exhibition', 'jim thompson'],
     color: '#8E44AD',
     gradient: 'linear-gradient(135deg, #8E44AD 0%, #5B2C6F 100%)',
+    // Thai culture and museums
+    images: [
+      'https://images.unsplash.com/photo-1577717903315-1691ae25ab3f?w=400&h=300&fit=crop&auto=format',
+      'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=400&h=300&fit=crop&auto=format',
+      'https://images.unsplash.com/photo-1583225214464-9296029427aa?w=400&h=300&fit=crop&auto=format',
+    ],
   },
   
   // ============================================
@@ -92,6 +140,12 @@ const IMAGE_LIBRARY = {
     keywords: ['massage', 'spa', 'wellness', 'relax', 'thai massage', 'yoga', 'meditation', 'health'],
     color: '#1ABC9C',
     gradient: 'linear-gradient(135deg, #1ABC9C 0%, #148F77 100%)',
+    // Thai massage and spa
+    images: [
+      'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=400&h=300&fit=crop&auto=format',
+      'https://images.unsplash.com/photo-1600334089648-b0d9d3028eb2?w=400&h=300&fit=crop&auto=format',
+      'https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=400&h=300&fit=crop&auto=format',
+    ],
   },
   
   // ============================================
@@ -101,6 +155,12 @@ const IMAGE_LIBRARY = {
     keywords: ['show', 'entertainment', 'performance', 'nightlife', 'club', 'cabaret', 'muay thai', 'boxing', 'concert', 'cinema'],
     color: '#E74C3C',
     gradient: 'linear-gradient(135deg, #E74C3C 0%, #922B21 100%)',
+    // Thai entertainment
+    images: [
+      'https://images.unsplash.com/photo-1504609773096-104ff2c73ba4?w=400&h=300&fit=crop&auto=format',
+      'https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=400&h=300&fit=crop&auto=format',
+      'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400&h=300&fit=crop&auto=format',
+    ],
   },
   
   // ============================================
@@ -110,6 +170,12 @@ const IMAGE_LIBRARY = {
     keywords: ['snorkel', 'diving', 'kayak', 'cruise', 'swimming', 'pool', 'waterpark', 'speedboat', 'longtail'],
     color: '#2980B9',
     gradient: 'linear-gradient(135deg, #2980B9 0%, #1A5276 100%)',
+    // Water activities in Thailand
+    images: [
+      'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=400&h=300&fit=crop&auto=format',
+      'https://images.unsplash.com/photo-1530053969600-caed2596d242?w=400&h=300&fit=crop&auto=format',
+      'https://images.unsplash.com/photo-1559494007-9f5847c49d94?w=400&h=300&fit=crop&auto=format',
+    ],
   },
   
   // ============================================
@@ -119,6 +185,12 @@ const IMAGE_LIBRARY = {
     keywords: ['elephant', 'safari', 'wildlife', 'zoo', 'animal', 'sanctuary', 'aquarium', 'tiger'],
     color: '#D35400',
     gradient: 'linear-gradient(135deg, #D35400 0%, #873600 100%)',
+    // Thai elephants and wildlife
+    images: [
+      'https://images.unsplash.com/photo-1549366021-9f761d450615?w=400&h=300&fit=crop&auto=format',
+      'https://images.unsplash.com/photo-1551632811-561732d1e306?w=400&h=300&fit=crop&auto=format',
+      'https://images.unsplash.com/photo-1517823382935-51bfcb0ec6bc?w=400&h=300&fit=crop&auto=format',
+    ],
   },
   
   // ============================================
@@ -128,6 +200,12 @@ const IMAGE_LIBRARY = {
     keywords: ['tour', 'excursion', 'day trip', 'adventure', 'activity', 'experience', 'guided'],
     color: '#16A085',
     gradient: 'linear-gradient(135deg, #16A085 0%, #0E6655 100%)',
+    // Tour activities
+    images: [
+      'https://images.unsplash.com/photo-1528127269322-539801943592?w=400&h=300&fit=crop&auto=format',
+      'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=400&h=300&fit=crop&auto=format',
+      'https://images.unsplash.com/photo-1476673160081-cf065bc4cf87?w=400&h=300&fit=crop&auto=format',
+    ],
   },
 }
 
@@ -317,12 +395,25 @@ export function getColorForType(type) {
 
 /**
  * MAIN FUNCTION: Get image URL for a given type
- * Returns a reliable placeholder SVG that matches the activity type
+ * Returns a realistic photo URL that matches the activity type
+ * Falls back to SVG placeholder if no image available
  * 
  * @param {string} type - Activity type or name (e.g., "Temple", "Wat Arun", "Beach")
- * @returns {string} - Image URL (SVG data URL)
+ * @returns {string} - Image URL (Unsplash photo or SVG data URL)
  */
 export function getImageForType(type) {
+  const category = getCategoryForType(type)
+  const config = IMAGE_LIBRARY[category]
+  
+  // Return a random image from the category's image array
+  if (config?.images && config.images.length > 0) {
+    // Use a deterministic selection based on the type string for consistency
+    const hash = type ? type.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0) : 0
+    const index = hash % config.images.length
+    return config.images[index]
+  }
+  
+  // Fallback to SVG placeholder
   return getPlaceholderSVG(type)
 }
 
@@ -339,4 +430,5 @@ export default {
   getCategoryForType,
   IMAGE_CATEGORIES,
 }
+
 

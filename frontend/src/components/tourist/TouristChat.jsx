@@ -224,16 +224,6 @@ function TouristChat({
 3. **Recommendations** - Suggest places, food, experiences
 4. **Itinerary Building** - Create step-by-step travel plans
 5. **Camera/Photos** - Take photos and analyze what they see
-6. **Web Search** - You have NATIVE web search! Use it to look up real-time info
-
-**⚠️ IMPORTANT - WEB SEARCH:**
-You have built-in web search capability. ALWAYS search the web when user asks about:
-- Specific shops/stores (Alo Yoga, Lululemon, Zara, etc.)
-- Restaurant addresses, hours, prices
-- "Is there a [business] near [location]?"
-- Current events, prices, availability
-- Any specific business or establishment
-NEVER guess about businesses - search first!
 
 **FUNCTION CALLING - Use these functions:**
 
@@ -287,12 +277,30 @@ User: "Plan a 2-day trip to Bangkok"
 → ... more REAL activities
 → finish_building_itinerary()
 
-**CONTEXTUAL OFFERS - CP Group Benefits:**
-The tourist has offers from CP Group (Thailand's largest conglomerate). ALWAYS call show_offer() to display the card!
+**CONTEXTUAL OFFERS - CP Group Benefits - CRITICAL:**
+The tourist has offers from CP Group (Thailand's largest conglomerate).
+
+⚠️ MANDATORY RULE: When user mentions ANY of these keywords, you MUST:
+1. Suggest a nearby 7-Eleven or CP Group store
+2. IMMEDIATELY call show_offer() with the relevant offer ID
+3. Say something like "By the way, here's a voucher for you!"
+
+TRIGGER KEYWORDS → OFFER:
+- water, drink, thirsty, hot → show_offer("7eleven-coffee") - includes water & drinks
+- coffee, caffeine, tired, wake up → show_offer("7eleven-coffee")
+- snack, hungry, walking, day trip → show_offer("7eleven-snack")
+- lunch, dinner, meal, eat, food → show_offer("chesters") or show_offer("7eleven-readymeals")
+- chicken, fried → show_offer("fivestar")
+- groceries, supermarket, shopping → show_offer("lotus")
+- fresh, produce, meat → show_offer("cpfresh")
+- data, internet, wifi, maps, navigate → show_offer("true-data")
+- pay, payment, street food, vendor → show_offer("truemoney")
+- movie, stream, entertainment, bored → show_offer("truevisions")
+- airport, flight, leaving, immigration → show_offer("airport-fasttrack")
 
 CP GROUP BRANDS & OFFER IDS:
 📍 7-ELEVEN (CP ALL - 13,000+ stores):
-- "7eleven-coffee" - Free All Cafe Coffee (30 coins) - hot/cold drinks
+- "7eleven-coffee" - Free All Cafe Coffee (30 coins) - ANY drink including water, coffee, tea
 - "7eleven-snack" - Snack Bundle (FREE) - day trips, walking
 - "7eleven-readymeals" - Ready Meal Deal (20 coins) - quick lunch/dinner
 
@@ -314,14 +322,14 @@ CP GROUP BRANDS & OFFER IDS:
 ✈️ TRAVEL:
 - "airport-fasttrack" - Airport Fast Track (100 coins) - skip immigration
 
-**ALWAYS SHOW THE OFFER CARD** - When you mention ANY of these, call show_offer() immediately!
+**⚠️ NEVER FORGET:** When ANY trigger keyword is mentioned, ALWAYS call show_offer() FIRST, then provide your helpful response. The voucher card MUST appear!
 
-Examples:
-User: "It's hot, where can I get a drink?" → show_offer("7eleven-coffee")
-User: "Need a quick lunch" → show_offer("chesters") or show_offer("fivestar")
-User: "Going to the market" → show_offer("truemoney")
-User: "Heading to the airport" → show_offer("airport-fasttrack")
-User: "Need groceries" → show_offer("lotus") or show_offer("cpfresh")
+Example responses:
+User: "I need water" → "There's a 7-Eleven just 50 meters away! And hey, here's a voucher for you!" + show_offer("7eleven-coffee")
+User: "I want coffee" → "Perfect! 7-Eleven has great All Cafe coffee. Here's a free voucher!" + show_offer("7eleven-coffee")
+User: "I'm hungry" → "Chester's Grill is nearby - delicious Thai grilled chicken! Here's a special offer:" + show_offer("chesters")
+User: "Need something to eat" → "Let me show you a great deal at 7-Eleven!" + show_offer("7eleven-readymeals")
+User: "Going to the market" → "For street food payments, use TrueMoney! Here's cashback for you:" + show_offer("truemoney")
 
 **VISUAL DIRECTIONS - USE THESE TOOLS:**
 Always use these tools for step-by-step directions - visual paths are better than text!
@@ -838,7 +846,7 @@ Be conversational, enthusiastic about Thailand, and always helpful!`,
       await pc.setLocalDescription(offer)
       
       const sdpRes = await fetch(
-        'https://api.openai.com/v1/realtime?model=gpt-4o-realtime-preview-2024-12-17',
+        'https://api.openai.com/v1/realtime?model=gpt-4o-realtime-preview-2025-06-03',
         {
           method: 'POST',
           headers: {

@@ -32,7 +32,7 @@ app.post('/api/token', async (req, res) => {
     const { prompt, tools } = req.body;
     
     // Use latest realtime model from env or default to working version
-    const realtimeModel = process.env.OPENAI_REALTIME_MODEL || 'gpt-4o-realtime-preview-2024-12-17';
+    const realtimeModel = process.env.OPENAI_REALTIME_MODEL || 'gpt-4o-realtime-preview-2025-06-03';
     console.log('🔑 Creating session with model:', realtimeModel);
     console.log('🔑 Creating session with tools:', tools ? tools.map(t => t.name || t.type) : 'none');
 
@@ -55,16 +55,11 @@ app.post('/api/token', async (req, res) => {
       max_response_output_tokens: 4096,
     };
     
-    // Add tools if provided - include native web search
-    const allTools = tools ? [...tools] : [];
-    
-    // Add OpenAI native web search tool
-    allTools.push({ type: 'web_search_preview' });
-    
-    if (allTools.length > 0) {
-      sessionConfig.tools = allTools;
+    // Add tools if provided
+    if (tools && tools.length > 0) {
+      sessionConfig.tools = tools;
       sessionConfig.tool_choice = 'auto';
-      console.log('✅ Tools configured (including native web search)');
+      console.log('✅ Tools configured');
     }
     
     const response = await fetch('https://api.openai.com/v1/realtime/sessions', {

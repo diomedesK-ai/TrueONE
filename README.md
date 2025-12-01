@@ -61,3 +61,5 @@ OPENAI_API_KEY=your_openai_api_key
 - 🔒 Security compliance settings
 - 🌙 Dark/Light theme support
 
+
+
