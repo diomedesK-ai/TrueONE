@@ -818,15 +818,15 @@ Be conversational, enthusiastic about Thailand, and always helpful!`,
         console.log('✅ Data channel opened')
         setIsAgentConnected(true)
         
-        // Configure session with higher noise threshold
+        // Configure session - IMPORTANT: longer silence duration to not interrupt user
         dc.send(JSON.stringify({
           type: 'session.update',
           session: {
             turn_detection: {
               type: 'server_vad',
-              threshold: 0.7,
-              prefix_padding_ms: 500,
-              silence_duration_ms: 800
+              threshold: 0.65,          // Balance between sensitivity and noise rejection
+              prefix_padding_ms: 400,   // Capture beginning of speech
+              silence_duration_ms: 1500 // Wait 1.5 seconds of silence before AI responds!
             },
             input_audio_transcription: {
               model: 'whisper-1'
@@ -872,27 +872,53 @@ Be conversational, enthusiastic about Thailand, and always helpful!`,
 
   const handleRealtimeEvent = (event) => {
     switch(event.type) {
+      // User started speaking - clear any pending AI response to avoid overlap
+      case 'input_audio_buffer.speech_started':
+        console.log('🎤 User started speaking')
+        pendingAIResponse.current = null
+        break
+        
+      // User stopped speaking - prepare for their transcript
+      case 'input_audio_buffer.speech_stopped':
+        console.log('🎤 User stopped speaking')
+        break
+      
+      // User's speech was transcribed - add to chat
       case 'conversation.item.input_audio_transcription.completed':
-        console.log('✅ USER:', event.transcript)
-        addMessage('user', event.transcript)
-        if (pendingAIResponse.current) {
-          addMessage('assistant', pendingAIResponse.current)
-          pendingAIResponse.current = null
+        if (event.transcript && event.transcript.trim()) {
+          console.log('✅ USER:', event.transcript)
+          // Store the user message with item_id for proper sequencing
+          pendingUserTranscript.current = {
+            text: event.transcript,
+            itemId: event.item_id,
+            timestamp: Date.now()
+          }
+          addMessage('user', event.transcript)
+        }
+        break
+      
+      // AI is responding - track it
+      case 'response.audio_transcript.delta':
+        // AI is speaking - don't log deltas to avoid spam
+        break
+        
+      // AI finished its response
+      case 'response.audio_transcript.done':
+        if (event.transcript && event.transcript.trim()) {
+          console.log('✅ AI:', event.transcript)
+          // Only add if we haven't already added this response
+          // Use a small delay to ensure proper ordering after user message
+          const responseText = event.transcript
+          setTimeout(() => {
+            addMessage('assistant', responseText)
+          }, 100)
         }
         break
         
-      case 'response.audio_transcript.done':
-        console.log('✅ AI:', event.transcript)
-        pendingAIResponse.current = event.transcript
-        setTimeout(() => {
-          if (pendingAIResponse.current === event.transcript) {
-            addMessage('assistant', event.transcript)
-            pendingAIResponse.current = null
-          }
-        }, 200)
-        break
-        
       case 'response.done':
+        // Clear pending transcript reference
+        pendingUserTranscript.current = null
+        
         if (event.response?.output) {
           const functionCalls = event.response.output.filter(item => item.type === 'function_call')
           functionCalls.forEach((item) => {

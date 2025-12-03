@@ -46,10 +46,10 @@ app.post('/api/token', async (req, res) => {
       input_audio_transcription: { model: 'whisper-1' },
       turn_detection: {
         type: 'server_vad',
-        threshold: 0.4,
-        prefix_padding_ms: 300,
-        silence_duration_ms: 500,
-        idle_timeout_ms: 10000,
+        threshold: 0.6,           // Higher = less sensitive to background noise
+        prefix_padding_ms: 400,   // Capture speech start better
+        silence_duration_ms: 1200, // Wait 1.2s of silence before responding (was 500ms!)
+        create_response: true,
       },
       temperature: 0.6,
       max_response_output_tokens: 4096,
